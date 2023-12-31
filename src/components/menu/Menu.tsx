@@ -69,15 +69,6 @@ const Menu: FC = () => {
       },
     });
 
-    gsap.set(".label", {
-      color: (i) => {
-        if (i === 0) {
-          return `hsla(0, 0%, 11%, 1)`;
-        }
-        return `hsla(${randomHue + i * 45}, ${randomSaturation}%, 11%, 1)`;
-      },
-    });
-
     gsap.set(".backdrop", {
       opacity: 0,
       backgroundColor: `hsla(${
