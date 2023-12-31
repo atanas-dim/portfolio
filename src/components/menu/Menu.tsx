@@ -135,7 +135,7 @@ const Menu: FC = () => {
       .set(".modal", { y: "-100%" });
   };
 
-  useEffect(() => {
+  const animateMenuButton = () => {
     gsap.to("#menu-toggle", {
       rotate: 360,
       duration: 0.6,
@@ -144,14 +144,19 @@ const Menu: FC = () => {
         gsap.set("#menu-toggle", { rotate: 0 });
       },
     });
-  }, [show]);
+  };
+
+  const toggleMenu = () => {
+    setShow((prev) => !prev);
+    animateMenuButton();
+  };
 
   return (
     <>
       <button
         id="menu-toggle"
         className="fixed z-10 bottom-2 right-2 flex w-12 h-12 justify-center items-center"
-        onClick={() => setShow((prev) => !prev)}
+        onClick={toggleMenu}
       >
         {show ? <CgClose size="32" /> : <CgMenuHotdog size="40" />}
       </button>
@@ -170,7 +175,7 @@ const Menu: FC = () => {
         >
           <div
             className="backdrop w-full h-full absolute top-0 left-0 bg-gray-500 backdrop-blur-sm bg-noise bg-32 opacity-0"
-            onClick={() => setShow(false)}
+            onClick={toggleMenu}
           />
 
           <div
