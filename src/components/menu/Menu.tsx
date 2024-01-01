@@ -4,11 +4,15 @@ import gsap from "gsap";
 import React, { useState, type FC, useRef, useEffect } from "react";
 import { Transition } from "react-transition-group";
 import { CgMenuHotdog, CgClose } from "react-icons/cg";
+import { GiHamburger } from "react-icons/gi";
 
 const ITEMS = ["Atanas", "Projects", "Stack", "Contact"];
 
 const Menu: FC = () => {
   const [show, setShow] = useState(false);
+
+  const timeline = useRef<GSAPTimeline>();
+
   const container = useRef<HTMLDivElement>(null);
 
   const [width, setWidth] = useState(0);
@@ -73,13 +77,17 @@ const Menu: FC = () => {
       opacity: 0,
       backgroundColor: `hsla(${
         randomHue + ITEMS.length * 45
-      }, ${randomSaturation}%, 55%, 0.6)`,
+      }, ${randomSaturation}%, 66%, 0.6)`,
+      filter: "grayscale(1)",
     });
+
     gsap.set(".item", { opacity: 1 });
   };
 
   const onEntering = () => {
-    gsap
+    if (timeline.current) timeline.current.kill();
+
+    timeline.current = gsap
       .timeline()
       .to(".item", {
         yPercent: 0,
@@ -92,7 +100,14 @@ const Menu: FC = () => {
         {
           opacity: 1,
         },
-        0.8
+        0.2
+      )
+      .to(
+        ".backdrop",
+        {
+          filter: "grayscale(0)",
+        },
+        1.1
       );
   };
 
@@ -105,15 +120,10 @@ const Menu: FC = () => {
         ? containerRect.width
         : containerRect.height;
 
-    gsap
+    if (timeline.current) timeline.current.kill();
+
+    timeline.current = gsap
       .timeline()
-      .to(
-        ".backdrop",
-        {
-          opacity: 0,
-        },
-        0
-      )
       .to(
         ".item",
         {
@@ -123,23 +133,38 @@ const Menu: FC = () => {
         },
         0
       )
+      .to(".backdrop", {
+        opacity: 0,
+      })
       .set(".modal", { y: "-100%" });
   };
 
-  const animateMenuButton = () => {
-    gsap.to("#menu-toggle", {
-      rotate: 360,
-      duration: 0.6,
-      ease: "back.out(1.2)",
-      onComplete: () => {
-        gsap.set("#menu-toggle", { rotate: 0 });
-      },
-    });
-  };
-
   const toggleMenu = () => {
-    setShow((prev) => !prev);
-    animateMenuButton();
+    gsap
+      .timeline()
+      .to("#menu-toggle", {
+        x: 100,
+        rotate: 30,
+        duration: 0.6,
+        ease: "back.in(2)",
+        onComplete: () => {
+          setShow((prev) => !prev);
+        },
+      })
+      .to("#menu-toggle", {
+        x: 0,
+        duration: 0.6,
+        ease: "back.out(2)",
+      })
+      .to(
+        "#menu-toggle",
+        {
+          rotate: 0,
+          duration: 0.3,
+          ease: "back.out(2)",
+        },
+        0.8
+      );
   };
 
   return (
@@ -149,7 +174,7 @@ const Menu: FC = () => {
         className="fixed z-10 bottom-2 right-2 flex w-12 h-12 justify-center items-center"
         onClick={toggleMenu}
       >
-        {show ? <CgClose size="32" /> : <CgMenuHotdog size="40" />}
+        {show ? <CgClose size="32" /> : <GiHamburger size="40" />}
       </button>
 
       <Transition
@@ -165,7 +190,7 @@ const Menu: FC = () => {
           className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="backdrop w-full h-full absolute top-0 left-0 bg-gray-500 backdrop-blur-sm bg-noise bg-32 opacity-0"
+            className="backdrop w-full h-full absolute top-0 left-0 bg-gray-300 backdrop-blur-sm bg-noise bg-32 opacity-0"
             onClick={toggleMenu}
           />
 
