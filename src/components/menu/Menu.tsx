@@ -92,7 +92,7 @@ const Menu: FC = () => {
       .to(".item", {
         yPercent: 0,
         stagger: 0.25,
-        duration: 1,
+        duration: 0.8,
         ease: "back.out",
       })
       .to(
@@ -107,7 +107,7 @@ const Menu: FC = () => {
         {
           filter: "grayscale(0)",
         },
-        1.1
+        0.8
       );
   };
 
@@ -129,13 +129,12 @@ const Menu: FC = () => {
         {
           yPercent: (i) => -100 * i - shortSide,
           stagger: -0.1,
+          duration: 0.35,
           ease: "back.in(0.8)",
         },
         0
       )
-      .to(".backdrop", {
-        opacity: 0,
-      })
+      .to(".backdrop", { duration: 0.3, opacity: 0 })
       .set(".modal", { y: "-100%" });
   };
 
@@ -145,7 +144,7 @@ const Menu: FC = () => {
       .to("#menu-toggle", {
         x: 100,
         rotate: 30,
-        duration: 0.6,
+        duration: 0.4,
         ease: "back.in(2)",
         onComplete: () => {
           setShow((prev) => !prev);
@@ -153,17 +152,17 @@ const Menu: FC = () => {
       })
       .to("#menu-toggle", {
         x: 0,
-        duration: 0.6,
+        duration: 0.4,
         ease: "back.out(2)",
       })
       .to(
         "#menu-toggle",
         {
           rotate: 0,
-          duration: 0.3,
-          ease: "back.out(2)",
+          duration: 0.4,
+          ease: "back.out(3)",
         },
-        0.8
+        0.475
       );
   };
 
@@ -208,10 +207,10 @@ const Menu: FC = () => {
                   className="item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
                 >
                   <span
-                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-md bg-white bg-noise bg-32"
+                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-noise bg-32"
                     style={{ height }}
                   />
-                  <span className="label font-extrabold text-3xl mix-blend-hard-light">
+                  <span className="label font-extrabold text-3xl">
                     {label.toLowerCase()}
                   </span>
                 </div>
