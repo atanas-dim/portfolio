@@ -3,10 +3,15 @@
 import gsap from "gsap";
 import React, { useState, type FC, useRef, useEffect } from "react";
 import { Transition } from "react-transition-group";
-import { CgMenuHotdog, CgClose } from "react-icons/cg";
+import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
 
-const ITEMS = ["Atanas", "Projects", "Stack", "Contact"];
+export const MENU_ITEMS = [
+  { hash: "", label: "Atanas" },
+  { hash: "projects", label: "Projects" },
+  { hash: "tools", label: "Tools" },
+  { hash: "contact", label: "Contact" },
+];
 
 const Menu: FC = () => {
   const [show, setShow] = useState(false);
@@ -61,7 +66,7 @@ const Menu: FC = () => {
 
     gsap.set(".item", {
       yPercent: (i) => -100 * i - shortSide,
-      zIndex: (i) => ITEMS.length - i,
+      zIndex: (i) => MENU_ITEMS.length - i,
     });
 
     gsap.set(".item-bg", {
@@ -76,7 +81,7 @@ const Menu: FC = () => {
     gsap.set(".backdrop", {
       opacity: 0,
       backgroundColor: `hsla(${
-        randomHue + ITEMS.length * 45
+        randomHue + MENU_ITEMS.length * 45
       }, ${randomSaturation}%, 66%, 0.6)`,
       filter: "grayscale(1)",
     });
@@ -200,20 +205,22 @@ const Menu: FC = () => {
               height,
             }}
           >
-            {ITEMS.map((label, index) => {
+            {MENU_ITEMS.map((item, index) => {
               return (
-                <div
+                <a
                   key={"label-" + index}
                   className="item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
+                  href={"/#" + item.hash}
+                  onClick={() => setShow(false)}
                 >
                   <span
                     className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-noise bg-32"
                     style={{ height }}
                   />
                   <span className="label font-extrabold text-3xl">
-                    {label.toLowerCase()}
+                    {item.label.toLowerCase()}
                   </span>
-                </div>
+                </a>
               );
             })}
           </div>

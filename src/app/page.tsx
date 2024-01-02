@@ -1,8 +1,11 @@
 "use client";
 
 import Intro from "@/components/intro/Intro";
+import { MENU_ITEMS } from "@/components/menu/Menu";
+import Projects from "@/components/projects/Projects";
 import Tools from "@/components/tools/Tools";
-import { ReactNode, RefObject, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { ReactNode, RefObject, useEffect, useRef } from "react";
 import Swiper from "swiper";
 import { register } from "swiper/element/bundle";
 import { SwiperSlideProps } from "swiper/react";
@@ -60,6 +63,19 @@ declare global {
 export default function Home() {
   const swiperRef = useRef<SwiperRef>(null);
 
+  useEffect(() => {
+    window.addEventListener("hashchange", (event: HashChangeEvent) => {
+      const url = event.newURL;
+      const hash = url.split("#")[1];
+
+      const currentIndex = swiperRef.current?.swiper.activeIndex;
+      const newIndex = MENU_ITEMS.findIndex((item) => item.hash === hash);
+
+      if (newIndex >= 0 && newIndex !== currentIndex)
+        swiperRef.current?.swiper.slideTo(newIndex);
+    });
+  }, []);
+
   return (
     <main className="w-full h-[100svh]">
       <swiper-container
@@ -68,12 +84,15 @@ export default function Home() {
         direction="vertical"
         pagination
         mousewheel
+        hash-navigation
       >
-        <swiper-slide>
+        <swiper-slide data-hash="">
           <Intro />
         </swiper-slide>
-        <swiper-slide>Projects</swiper-slide>
-        <swiper-slide>
+        <swiper-slide data-hash="projects">
+          <Projects />
+        </swiper-slide>
+        <swiper-slide data-hash="tools">
           <Tools />
         </swiper-slide>
       </swiper-container>

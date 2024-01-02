@@ -19,7 +19,7 @@ body {
 }
 
 swiper-container {
-  --swiper-theme-color: #000;
+  /* --swiper-theme-color: #000; */
 
   width: 100%;
   height: 100svh;
