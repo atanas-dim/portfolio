@@ -5,11 +5,11 @@ import { MENU_ITEMS } from "@/components/menu/Menu";
 import Projects from "@/components/projects/Projects";
 import Tools from "@/components/tools/Tools";
 import { useRouter } from "next/navigation";
-import { ReactNode, RefObject, useEffect, useRef } from "react";
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import Swiper from "swiper";
 import { register } from "swiper/element/bundle";
 import { SwiperSlideProps } from "swiper/react";
-import { SwiperOptions } from "swiper/types";
+import { SwiperEvents, SwiperOptions } from "swiper/types";
 
 // Types based on -> https://github.com/nolimits4web/swiper/issues/6466#issuecomment-1464979762
 
@@ -62,6 +62,7 @@ declare global {
 
 export default function Home() {
   const swiperRef = useRef<SwiperRef>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     window.addEventListener("hashchange", (event: HashChangeEvent) => {
@@ -74,10 +75,19 @@ export default function Home() {
       if (newIndex >= 0 && newIndex !== currentIndex)
         swiperRef.current?.swiper.slideTo(newIndex);
     });
+
+    setActiveIndex(swiperRef.current?.swiper.activeIndex || 0);
+
+    swiperRef.current?.addEventListener("swiperslidechange", (event: any) => {
+      setActiveIndex(event.detail[0].activeIndex);
+    });
+
+    // TODO Remove event listeners in returned func
   }, []);
 
   return (
     <main className="w-full h-[100svh]">
+      {/* TODO Map slides from array of sections */}
       <swiper-container
         ref={swiperRef}
         slides-per-view={1}
@@ -93,7 +103,7 @@ export default function Home() {
           <Projects />
         </swiper-slide>
         <swiper-slide data-hash="tools">
-          <Tools />
+          <Tools isActiveSection={activeIndex === 2} />
         </swiper-slide>
       </swiper-container>
     </main>

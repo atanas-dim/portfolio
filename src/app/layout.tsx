@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-noise bg-32">
+      <body>
         {children}
         <Menu />
       </body>
