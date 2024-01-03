@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { HiMail } from "react-icons/hi";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
+import { SiCodesandbox } from "react-icons/si";
 
 type SocialLink = {
   icon: ReactNode;
@@ -16,6 +17,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
   {
     icon: <FaGithub size="32" />,
     href: "https://github.com/atanas-dim",
+  },
+  {
+    icon: <SiCodesandbox size="24" />,
+    href: "https://codesandbox.io/u/atanas-dim",
   },
   {
     icon: <FaLinkedin size="32" />,

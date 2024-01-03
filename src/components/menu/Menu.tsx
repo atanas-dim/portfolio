@@ -175,7 +175,7 @@ const Menu: FC = () => {
     <>
       <button
         id="menu-toggle"
-        className="fixed z-10 bottom-2 right-2 flex w-12 h-12 justify-center items-center"
+        className="fixed z-10 bottom-3 right-3 flex w-12 h-12 justify-center items-center"
         onClick={toggleMenu}
       >
         {show ? <CgClose size="32" /> : <GiHamburger size="40" />}

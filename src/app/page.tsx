@@ -4,12 +4,11 @@ import Intro from "@/components/intro/Intro";
 import { MENU_ITEMS } from "@/components/menu/Menu";
 import Projects from "@/components/projects/Projects";
 import Tools from "@/components/tools/Tools";
-import { useRouter } from "next/navigation";
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import Swiper from "swiper";
 import { register } from "swiper/element/bundle";
 import { SwiperSlideProps } from "swiper/react";
-import { SwiperEvents, SwiperOptions } from "swiper/types";
+import { SwiperOptions } from "swiper/types";
 
 // Types based on -> https://github.com/nolimits4web/swiper/issues/6466#issuecomment-1464979762
 
@@ -55,8 +54,12 @@ declare global {
     interface SwiperContainerAttributes extends KebabObjectKeys<SwiperOptions> {
       ref?: RefObject<SwiperRef>;
       children?: ReactNode;
+      class?: string;
     }
-    interface SwiperSlideAttributes extends KebabObjectKeys<SwiperSlideProps> {}
+    interface SwiperSlideAttributes extends KebabObjectKeys<SwiperSlideProps> {
+      class?: string;
+      key?: string;
+    }
   }
 }
 
@@ -65,7 +68,7 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    window.addEventListener("hashchange", (event: HashChangeEvent) => {
+    const onHashChange = (event: HashChangeEvent) => {
       const url = event.newURL;
       const hash = url.split("#")[1];
 
@@ -74,20 +77,35 @@ export default function Home() {
 
       if (newIndex >= 0 && newIndex !== currentIndex)
         swiperRef.current?.swiper.slideTo(newIndex);
-    });
+    };
 
-    setActiveIndex(swiperRef.current?.swiper.activeIndex || 0);
-
-    swiperRef.current?.addEventListener("swiperslidechange", (event: any) => {
+    const onSwiperSlideChange = (event: any) => {
       setActiveIndex(event.detail[0].activeIndex);
-    });
+    };
 
-    // TODO Remove event listeners in returned func
+    const swiperRefCurrent = swiperRef.current;
+
+    window.addEventListener("hashchange", onHashChange);
+
+    swiperRefCurrent?.addEventListener(
+      "swiperslidechange",
+      onSwiperSlideChange
+    );
+
+    setActiveIndex(swiperRefCurrent?.swiper?.activeIndex || 0);
+
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+
+      swiperRefCurrent?.removeEventListener(
+        "swiperslidechange",
+        onSwiperSlideChange
+      );
+    };
   }, []);
 
   return (
     <main className="w-full h-[100svh]">
-      {/* TODO Map slides from array of sections */}
       <swiper-container
         ref={swiperRef}
         slides-per-view={1}
@@ -96,13 +114,13 @@ export default function Home() {
         mousewheel
         hash-navigation
       >
-        <swiper-slide data-hash="">
+        <swiper-slide data-hash="" class="home-carousel-slide">
           <Intro />
         </swiper-slide>
-        <swiper-slide data-hash="projects">
+        <swiper-slide data-hash="projects" class="home-carousel-slide">
           <Projects />
         </swiper-slide>
-        <swiper-slide data-hash="tools">
+        <swiper-slide data-hash="tools" class="home-carousel-slide">
           <Tools isActiveSection={activeIndex === 2} />
         </swiper-slide>
       </swiper-container>
