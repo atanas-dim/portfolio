@@ -8,13 +8,14 @@ const Projects: FC = () => {
       <swiper-container
         slides-per-view={1}
         pagination
+        navigation
         class="border border-solid border-gray-200 rounded-3xl h-full w-full max-h-[min(42rem,calc(100%_-_2rem))] shadow-inner-xl"
       >
         {PROJECTS.map((project, index) => {
           return (
             <swiper-slide
               key={"project-" + index}
-              class="w-full h-full p-4 pb-6 flex flex-col items-center justify-center gap-2 md:gap-4"
+              class="w-full h-full p-4 pb-6 flex flex-col items-center justify-center gap-2 md:gap-4 [&_*]:lowercase"
             >
               <Image
                 src={project.image.src}
@@ -35,7 +36,7 @@ const Projects: FC = () => {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="bg-blue-400 px-3 py-2 rounded-md leading-none"
+                      className="bg-blue-400 px-3 py-2 rounded-lg leading-none"
                     >
                       {link.label}
                     </a>

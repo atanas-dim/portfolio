@@ -1,5 +1,6 @@
 "use client";
 
+import ContactForm from "@/components/contact/Contact";
 import Intro from "@/components/intro/Intro";
 import { MENU_ITEMS } from "@/components/menu/Menu";
 import Projects from "@/components/projects/Projects";
@@ -122,6 +123,9 @@ export default function Home() {
         </swiper-slide>
         <swiper-slide data-hash="tools" class="home-carousel-slide">
           <Tools isActiveSection={activeIndex === 2} />
+        </swiper-slide>
+        <swiper-slide data-hash="contact" class="home-carousel-slide">
+          <ContactForm />
         </swiper-slide>
       </swiper-container>
     </main>
