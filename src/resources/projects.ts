@@ -14,7 +14,7 @@ export type ProjectData = {
 export const PROJECTS: ProjectData[] = [
   {
     title: "Searching Mapbox",
-    technologies: "ReactJS, SASS, Mapbox GL",
+    technologies: "React, TypeScript, SASS, Mapbox GL",
     description:
       "Using Mapbox GL API to search for nearby places. Custom features include search bar, theme toggler, collapsible list of nearby places.",
     links: [
@@ -57,13 +57,13 @@ export const PROJECTS: ProjectData[] = [
   },
   {
     title: "React Calendar",
-    technologies: "React, TypeScript, date-fns, SCSS",
+    technologies: "React, TypeScript, date-fns, SASS",
     description:
       "A sandbox app using date-fns and CSS grid to create a responsive calendar.",
     links: [
       {
         label: "CodeSandbox",
-        href: "https://codesandbox.io/s/react-grid-calendar-egcn3f?file=/src/components/calendar/Calendar.tsx",
+        href: "https://codesandbox.io/p/devbox/react-grid-calendar-jt3ry6",
       },
     ],
     image: {
