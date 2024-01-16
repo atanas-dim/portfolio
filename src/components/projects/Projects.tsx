@@ -20,7 +20,7 @@ const Projects: FC = () => {
               <Image
                 src={project.image.src}
                 alt={project.image.alt}
-                className=" max-h-[70%] max-w-[70%] object-contain rounded-xl flex-shrink"
+                className="max-h-[70%] max-w-[70%] w-fit h-full object-contain rounded-xl flex-shrink"
               />
               <span className="text-xl font-extrabold">{project.title}</span>
               <span className="text-sm ">{project.technologies}</span>
