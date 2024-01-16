@@ -5,13 +5,10 @@ import Intro from "@/components/intro/Intro";
 import { MENU_ITEMS } from "@/components/menu/Menu";
 import Projects from "@/components/projects/Projects";
 import Tools from "@/components/tools/Tools";
-import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
-import Swiper from "swiper";
-import { register } from "swiper/element/bundle";
-import { SwiperSlideProps } from "swiper/react";
-import { SwiperOptions } from "swiper/types";
+import { SwiperRef } from "@/types/swiper";
+import { useEffect, useRef, useState } from "react";
 
-// Types based on -> https://github.com/nolimits4web/swiper/issues/6466#issuecomment-1464979762
+import { register } from "swiper/element/bundle";
 
 /**
  * When you import Swiper custom elements from node modules, we need to manually register them.
@@ -19,54 +16,30 @@ import { SwiperOptions } from "swiper/types";
  */
 register();
 
-type Kebab<
-  T extends string,
-  A extends string = ""
-> = T extends `${infer F}${infer R}`
-  ? Kebab<R, `${A}${F extends Lowercase<F> ? "" : "-"}${Lowercase<F>}`>
-  : A;
-
-/**
- * Helper for converting object keys to kebab case because Swiper web components parameters are available as kebab-case attributes.
- * @link https://swiperjs.com/element#parameters-as-attributes
- */
-type KebabObjectKeys<T> = {
-  [key in keyof T as Kebab<key & string>]: T[key] extends Object
-    ? KebabObjectKeys<T[key]>
-    : T[key];
-};
-
-/**
- * Swiper 9 doesn't support Typescript yet, we are watching the following issue:
- * @link https://github.com/nolimits4web/swiper/issues/6466
- *
- * All parameters can be found on the following page:
- * @link https://swiperjs.com/swiper-api#parameters
- */
-type SwiperRef = HTMLElement & { swiper: Swiper; initialize: () => void };
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "swiper-container": SwiperContainerAttributes;
-      "swiper-slide": SwiperSlideAttributes;
-    }
-
-    interface SwiperContainerAttributes extends KebabObjectKeys<SwiperOptions> {
-      ref?: RefObject<SwiperRef>;
-      children?: ReactNode;
-      class?: string;
-    }
-    interface SwiperSlideAttributes extends KebabObjectKeys<SwiperSlideProps> {
-      class?: string;
-      key?: string;
-    }
-  }
-}
+const WHEEL_DISTANCE = 16;
 
 export default function Home() {
   const swiperRef = useRef<SwiperRef>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      const deltaY = e.deltaY;
+
+      if (swiperRef.current?.swiper.animating) return;
+
+      if (deltaY > WHEEL_DISTANCE) {
+        swiperRef.current?.swiper.slideNext();
+      } else if (deltaY < -WHEEL_DISTANCE) {
+        swiperRef.current?.swiper.slidePrev();
+      }
+    };
+    document.body.addEventListener("wheel", onWheel);
+
+    return () => {
+      document.body.removeEventListener("wheel", onWheel);
+    };
+  }, []);
 
   useEffect(() => {
     const onHashChange = (event: HashChangeEvent) => {
@@ -112,7 +85,6 @@ export default function Home() {
         slides-per-view={1}
         direction="vertical"
         pagination
-        mousewheel
         hash-navigation
       >
         <swiper-slide data-hash="" class="home-carousel-slide">
