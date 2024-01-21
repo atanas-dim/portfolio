@@ -9,6 +9,7 @@ const Projects: FC = () => {
         slides-per-view={1}
         pagination
         navigation
+        rewind
         class="border border-solid border-gray-200 rounded-3xl h-full w-full max-h-[min(42rem,calc(100%_-_2rem))] shadow-inner-xl"
       >
         {PROJECTS.map((project, index) => {
@@ -20,7 +21,7 @@ const Projects: FC = () => {
               <Image
                 src={project.image.src}
                 alt={project.image.alt}
-                className="max-h-[70%] max-w-[70%] w-fit object-contain rounded-xl flex-shrink"
+                className="max-h-[70%] max-w-[70%] w-auto object-contain rounded-xl flex-shrink"
               />
               <span className="text-xl font-extrabold">{project.title}</span>
               <span className="text-sm ">{project.technologies}</span>
