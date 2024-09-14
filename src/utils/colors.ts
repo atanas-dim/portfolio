@@ -194,4 +194,4 @@ export function interpolateColor(
   return rgbToHex(r, g, b);
 }
 
-export const MAX_LIGHTNESS = 85;
+export const MAX_LIGHTNESS = 80;

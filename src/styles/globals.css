@@ -8,7 +8,7 @@
 
 html,
 body {
-  @apply w-full h-[100svh];
+  @apply w-full h-[100svh] scroll-smooth;
 }
 
 body {

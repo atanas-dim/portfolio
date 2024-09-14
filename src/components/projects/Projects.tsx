@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useRef } from "react";
+import { type FC, useEffect, useRef, useState } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import {
@@ -8,6 +8,12 @@ import {
   interpolateColor,
   MAX_LIGHTNESS,
 } from "@/utils/colors";
+
+const PORTRAIT_HEIGHT = 70 + "vmax";
+const LANDSCAPE_HEIGHT = 80 + "vmin";
+
+const VIDEO_WRAPPER_CLASSES = `landscape:p-[calc(0.02*${LANDSCAPE_HEIGHT})] landscape:rounded-[calc(0.08*${LANDSCAPE_HEIGHT})] portrait:p-[calc(0.02*${PORTRAIT_HEIGHT})] portrait:rounded-[calc(0.08*${PORTRAIT_HEIGHT})] size-fit border border-black`;
+const VIDEO_PLAYER_CLASSES = `aspect-[1178/2556] object-cover border border-black landscape:h-[${LANDSCAPE_HEIGHT}] landscape:rounded-[calc(0.06*${LANDSCAPE_HEIGHT})] portrait:h-[${PORTRAIT_HEIGHT}] portrait:rounded-[calc(0.06*${PORTRAIT_HEIGHT})]`;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,15 +27,19 @@ const Projects: FC = () => {
       );
 
       const setColors = (progress: number) => {
-        const colorStops = [
-          "#ffffff",
-          adjustColorLightness("#D70321", MAX_LIGHTNESS),
-          "#ffffff",
-          adjustColorLightness("#349649", MAX_LIGHTNESS),
-          "#ffffff",
-          adjustColorLightness("#0000BD", MAX_LIGHTNESS),
-          "#ffffff",
-        ];
+        const colorStops = PROJECTS.map((project, index) => {
+          if (index === 0)
+            return [
+              "#ffffff",
+              adjustColorLightness(project.themeColor, MAX_LIGHTNESS),
+              "#ffffff",
+            ];
+          else
+            return [
+              adjustColorLightness(project.themeColor, MAX_LIGHTNESS),
+              "#ffffff",
+            ];
+        }).flat();
 
         const themeColor = interpolateColor(colorStops, progress);
 
@@ -87,9 +97,10 @@ export default Projects;
 
 type ProjectProps = ProjectData;
 
-const Project: FC<ProjectProps> = ({ title }) => {
+const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
@@ -99,6 +110,18 @@ const Project: FC<ProjectProps> = ({ title }) => {
             trigger: containerRef.current,
             start: "top bottom",
             scrub: true,
+            onUpdate: (self) => {
+              const video = videoRef.current;
+              if (!video) return;
+
+              const progress = self.progress;
+
+              if (progress >= 0.35 && progress <= 0.65) {
+                video.play();
+              } else {
+                video.pause();
+              }
+            },
           },
         })
         .to(contentRef.current, {
@@ -109,19 +132,45 @@ const Project: FC<ProjectProps> = ({ title }) => {
     { scope: containerRef }
   );
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.load();
+  }, []);
+
   return (
     <div ref={containerRef} className="w-full h-screen shrink-0">
       <div
         ref={contentRef}
         className="w-full h-screen fixed inset-0"
-        style={{ transform: `translateX(100%)` }}
+        style={{
+          transform: `translateX(100%)`,
+        }}
       >
-        <div className="w-full h-dvh flex items-center justify-center">
-          <div className="aspect-[1178/2556] border border-black rounded-lg p-6">
-            {title}
+        <div className="w-full h-svh flex items-center justify-center ">
+          <div className={VIDEO_WRAPPER_CLASSES}>
+            {videoSrc ? (
+              <video
+                ref={videoRef}
+                src={videoSrc}
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={VIDEO_PLAYER_CLASSES}
+              ></video>
+            ) : (
+              <div
+                className={VIDEO_PLAYER_CLASSES}
+                style={{
+                  backgroundColor: themeColor,
+                }}
+              >
+                {title}
+              </div>
+            )}
           </div>
-          {/* <div>{title}</div>
-          <div>{title}</div> */}
         </div>
       </div>
     </div>

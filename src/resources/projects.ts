@@ -1,9 +1,12 @@
-import redditClientImg from "@/assets/images/reddit-mobile.png";
-import reactCalendarImg from "@/assets/images/react-calendar.jpg";
-import mapImg from "@/assets/images/mapbox-mobile.png";
 import { StaticImageData } from "next/image";
 
+import mapImg from "@/assets/images/mapbox-mobile.png";
+import reactCalendarImg from "@/assets/images/react-calendar.jpg";
+import redditClientImg from "@/assets/images/reddit-mobile.png";
+
 export type ProjectData = {
+  themeColor: string;
+  videoSrc?: string;
   title: string;
   technologies: string;
   description?: string;
@@ -13,6 +16,8 @@ export type ProjectData = {
 
 export const PROJECTS: ProjectData[] = [
   {
+    themeColor: "#D70321",
+    videoSrc: "/videos/sample-video.mp4",
     title: "Searching Mapbox",
     technologies: "React, TypeScript, SASS, Mapbox GL",
     description:
@@ -35,6 +40,7 @@ export const PROJECTS: ProjectData[] = [
   },
 
   {
+    themeColor: "#349649",
     title: "Reddit Client",
     technologies: "React, Redux, Reddit JSON API",
     description:
@@ -56,6 +62,7 @@ export const PROJECTS: ProjectData[] = [
     },
   },
   {
+    themeColor: "#0000BD",
     title: "React Calendar",
     technologies: "React, TypeScript, date-fns, SASS",
     description:
