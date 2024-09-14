@@ -1,16 +1,17 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC } from "react";
+import { type FC, useRef } from "react";
 
 import { SOCIAL_LINKS } from "@/resources/socialLinks";
 
 const Intro: FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   useGSAP(
     () => {
       gsap
         .timeline({
           scrollTrigger: {
-            trigger: "#intro",
+            trigger: containerRef.current,
             start: "top top",
             end: "bottom center",
             scrub: 2,
@@ -22,11 +23,11 @@ const Intro: FC = () => {
           stagger: 0.2,
         });
     },
-    { scope: "#intro" }
+    { scope: containerRef }
   );
 
   return (
-    <section id="intro" className="w-full h-screen">
+    <section id="intro" ref={containerRef} className="w-full h-screen">
       <div
         id="intro-content"
         className="w-full h-screen fixed inset-0 flex justify-center items-center flex-col p-8"

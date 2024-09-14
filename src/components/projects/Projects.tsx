@@ -6,33 +6,38 @@ import { ProjectData, PROJECTS } from "@/resources/projects";
 import { interpolateColor } from "@/utils/colors";
 
 const Projects: FC = () => {
-  useGSAP(() => {
-    const themeColorMetaTag = document.querySelector(
-      'meta[name="theme-color"]'
-    );
-    console.log({ themeColorMetaTag });
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: "#projects",
-        start: "top bottom",
-        end: "bottom 200vh",
-        scrub: true,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          console.log({ progress });
-          const color = interpolateColor(
-            ["#ffffff", "#ff0000", "#00cd22", "#0800ff", "#ffffff"],
-            progress
-          );
-          document.body.style.backgroundColor = color;
-          themeColorMetaTag?.setAttribute("content", color);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const themeColorMetaTag = document.querySelector(
+        'meta[name="theme-color"]'
+      );
+      console.log({ themeColorMetaTag });
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom 200vh",
+          scrub: true,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            console.log({ progress });
+            const color = interpolateColor(
+              ["#ffffff", "#ff0000", "#00cd22", "#0800ff", "#ffffff"],
+              progress
+            );
+            document.body.style.backgroundColor = color;
+            themeColorMetaTag?.setAttribute("content", color);
+          },
         },
-      },
-    });
-  }, []);
+      });
+    },
+    { scope: containerRef }
+  );
 
   return (
-    <section id="projects" className="w-full flex flex-col">
+    <section id="projects" ref={containerRef} className="w-full flex flex-col">
       {PROJECTS.map((project, index) => {
         return <Project key={`project-container-${index}`} {...project} />;
       })}
