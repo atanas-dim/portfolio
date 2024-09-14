@@ -9,11 +9,8 @@ import {
   MAX_LIGHTNESS,
 } from "@/utils/colors";
 
-const PORTRAIT_HEIGHT = 70 + "vmax";
-const LANDSCAPE_HEIGHT = 80 + "vmin";
-
-const VIDEO_WRAPPER_CLASSES = `landscape:p-[calc(0.02*${LANDSCAPE_HEIGHT})] landscape:rounded-[calc(0.08*${LANDSCAPE_HEIGHT})] portrait:p-[calc(0.02*${PORTRAIT_HEIGHT})] portrait:rounded-[calc(0.08*${PORTRAIT_HEIGHT})] size-fit border border-black`;
-const VIDEO_PLAYER_CLASSES = `aspect-[1178/2556] object-cover border border-black landscape:h-[${LANDSCAPE_HEIGHT}] landscape:rounded-[calc(0.06*${LANDSCAPE_HEIGHT})] portrait:h-[${PORTRAIT_HEIGHT}] portrait:rounded-[calc(0.06*${PORTRAIT_HEIGHT})]`;
+const VIDEO_WRAPPER_CLASSES = `landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
+const VIDEO_PLAYER_CLASSES = `aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
