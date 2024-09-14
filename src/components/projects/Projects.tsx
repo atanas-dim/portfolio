@@ -13,18 +13,24 @@ const Projects: FC = () => {
       const themeColorMetaTag = document.querySelector(
         'meta[name="theme-color"]'
       );
-      console.log({ themeColorMetaTag });
       gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top bottom",
-          end: "bottom 200vh",
+          start: "top top",
+          end: "bottom bottom",
           scrub: true,
           onUpdate: (self) => {
             const progress = self.progress;
-            console.log({ progress });
             const color = interpolateColor(
-              ["#ffffff", "#ff0000", "#00cd22", "#0800ff", "#ffffff"],
+              [
+                "#ffffff",
+                "#ff0000",
+                "#ffffff",
+                "#00cd22",
+                "#ffffff",
+                "#0800ff",
+                "#ffffff",
+              ],
               progress
             );
             document.body.style.backgroundColor = color;
@@ -37,10 +43,13 @@ const Projects: FC = () => {
   );
 
   return (
-    <section id="projects" ref={containerRef} className="w-full flex flex-col">
-      {PROJECTS.map((project, index) => {
-        return <Project key={`project-container-${index}`} {...project} />;
-      })}
+    // PY needed to make the colours show in full when each projects is exactly in the middle of the screen
+    <section ref={containerRef} className="w-full flex flex-col py-[50vh]">
+      <div id="projects" className="w-full flex flex-col">
+        {PROJECTS.map((project, index) => {
+          return <Project key={`project-container-${index}`} {...project} />;
+        })}
+      </div>
     </section>
   );
 };
