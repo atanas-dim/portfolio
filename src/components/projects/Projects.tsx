@@ -133,7 +133,18 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     const video = videoRef.current;
     if (!video) return;
 
+    const onEnded = () => {
+      video.currentTime = 0;
+      video.play();
+    };
+
+    video.addEventListener("ended", onEnded, false);
+
     video.load();
+
+    return () => {
+      video.removeEventListener("ended", onEnded);
+    };
   }, []);
 
   return (
