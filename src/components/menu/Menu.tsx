@@ -1,8 +1,16 @@
 "use client";
 
-import { hexToHsl, rgbToHsl } from "@/utils/colors";
+import useMenuStore from "@/hooks/useMenuStore";
+import { adjustColorLightness, hexToHsl, MAX_LIGHTNESS } from "@/utils/colors";
 import gsap from "gsap";
-import React, { type FC, useEffect, useRef, useState } from "react";
+import React, {
+  type FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
 import { Transition } from "react-transition-group";
@@ -15,7 +23,8 @@ export const MENU_ITEMS = [
 ];
 
 const Menu: FC = () => {
-  const [show, setShow] = useState(false);
+  const show = useMenuStore((state) => state.show);
+  const setShow = useMenuStore((state) => state.setShow);
 
   const timeline = useRef<GSAPTimeline>();
 
@@ -48,6 +57,41 @@ const Menu: FC = () => {
     };
   }, []);
 
+  const setColorsBasedOnThemeColor = useCallback(() => {
+    const themeColorMetaTag = document.querySelector(
+      'meta[name="theme-color"]'
+    );
+
+    const themeColorHex =
+      themeColorMetaTag?.getAttribute("content") || "#ffffff";
+
+    const hueOffset = 25;
+
+    console.log({ themeColorHex });
+
+    gsap.set(".item-bg", {
+      backgroundColor: (i) => {
+        if (themeColorHex === "#ffffff") {
+          return i === 0
+            ? themeColorHex
+            : adjustColorLightness("#eb40ee", MAX_LIGHTNESS);
+        }
+        return themeColorHex;
+      },
+      filter: (i) => {
+        return i <= 0 ? "hue-rotate(0deg)" : `hue-rotate(${i * hueOffset}deg)`;
+      },
+      duration: 0.7,
+    });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", setColorsBasedOnThemeColor);
+    return () => {
+      window.removeEventListener("scroll", setColorsBasedOnThemeColor);
+    };
+  }, []);
+
   const onEnter = () => {
     if (!container.current) return;
     const containerRect = container.current.getBoundingClientRect();
@@ -57,30 +101,6 @@ const Menu: FC = () => {
         ? containerRect.width
         : containerRect.height;
 
-    const randomHue = Math.floor(Math.random() * 360);
-    const randomSaturation = Math.min(
-      70,
-      Math.max(50, Math.floor(Math.random() * 100))
-    );
-
-    const themeColorMetaTag = document.querySelector(
-      'meta[name="theme-color"]'
-    );
-
-    const themeColorHex =
-      themeColorMetaTag?.getAttribute("content") || "#ffffff";
-
-    const { hue, saturation, lightness } = hexToHsl(themeColorHex) || {
-      hue: 0,
-      saturation: 0,
-      lightness: 100,
-    };
-
-    const finalHue = hue || randomHue;
-    const finalSaturation = saturation || randomSaturation;
-    const finalLightness = Math.min(90, lightness || 100);
-    const hueOffset = 20;
-
     gsap.set(".modal", { y: 0 });
 
     gsap.set(".item", {
@@ -88,24 +108,7 @@ const Menu: FC = () => {
       zIndex: (i) => MENU_ITEMS.length - i,
     });
 
-    gsap.set(".item-bg", {
-      backgroundColor: (i) => {
-        if (i === 0) {
-          return themeColorHex;
-        }
-        return `hsla(${
-          finalHue + i * hueOffset
-        }, ${finalSaturation}%, ${finalLightness}%, 1)`;
-      },
-    });
-
-    gsap.set(".backdrop", {
-      opacity: 0,
-      backgroundColor: `hsla(${
-        finalHue + MENU_ITEMS.length * hueOffset
-      }, ${finalSaturation}%, ${finalLightness}%, 0.6)`,
-      filter: "grayscale(1)",
-    });
+    setColorsBasedOnThemeColor();
 
     gsap.set(".item", { opacity: 1 });
   };
@@ -150,6 +153,7 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
+      .to(".backdrop", { duration: 0.6, opacity: 0 })
       .to(
         ".item",
         {
@@ -160,7 +164,7 @@ const Menu: FC = () => {
         },
         0
       )
-      .to(".backdrop", { duration: 0.3, opacity: 0 })
+
       .set(".modal", { y: "-100%" });
   };
 
@@ -173,7 +177,7 @@ const Menu: FC = () => {
         duration: 0.4,
         ease: "back.in(2)",
         onComplete: () => {
-          setShow((prev) => !prev);
+          setShow(!show);
         },
       })
       .to("#menu-toggle", {
@@ -235,7 +239,9 @@ const Menu: FC = () => {
                   onClick={() => setShow(false)}
                 >
                   <span
-                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32"
+                    className={`item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32 ${
+                      index > 0 ? "transition-all duration-300" : ""
+                    }`}
                     style={{ height }}
                   />
                   <span className="label font-extrabold text-3xl">

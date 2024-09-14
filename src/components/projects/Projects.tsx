@@ -3,7 +3,11 @@ import gsap from "gsap";
 import { type FC, useRef } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
-import { interpolateColor, setLightness } from "@/utils/colors";
+import {
+  adjustColorLightness,
+  interpolateColor,
+  MAX_LIGHTNESS,
+} from "@/utils/colors";
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,6 +17,7 @@ const Projects: FC = () => {
       const themeColorMetaTag = document.querySelector(
         'meta[name="theme-color"]'
       );
+
       gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -24,11 +29,11 @@ const Projects: FC = () => {
             const color = interpolateColor(
               [
                 "#ffffff",
-                setLightness("#D70321", 90),
+                adjustColorLightness("#D70321", MAX_LIGHTNESS),
                 "#ffffff",
-                setLightness("#39884a", 90),
+                adjustColorLightness("#39884a", MAX_LIGHTNESS),
                 "#ffffff",
-                setLightness("#0000BD", 90),
+                adjustColorLightness("#0000BD", MAX_LIGHTNESS),
                 "#ffffff",
               ],
               progress
@@ -39,7 +44,7 @@ const Projects: FC = () => {
         },
       });
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [] }
   );
 
   return (

@@ -1,41 +1,3 @@
-export function setLightness(hex: string, targetLightness: number): string {
-  // Ensure the target lightness is between 0 and 100
-  targetLightness = Math.max(0, Math.min(100, targetLightness));
-
-  // Remove the leading '#' if present
-  hex = hex.replace(/^#/, "");
-
-  // Convert hex to RGB
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-
-  // Calculate the current lightness
-  const currentLightness =
-    ((Math.max(r, g, b) + Math.min(r, g, b)) / 2 / 255) * 100;
-
-  console.log(currentLightness);
-
-  // Calculate blend amount based on the target lightness
-  const blendAmount = (targetLightness - currentLightness) / 100;
-
-  // Blend color with white to achieve the target lightness
-  const blendColor = (amount: number, baseColor: number) =>
-    Math.round(baseColor + amount * (255 - baseColor));
-
-  const newR = blendColor(blendAmount, r);
-  const newG = blendColor(blendAmount, g);
-  const newB = blendColor(blendAmount, b);
-
-  // Convert adjusted RGB back to hex
-  const toHex = (value: number) => value.toString(16).padStart(2, "0");
-  const newHex = `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
-
-  console.log({ hex, newHex });
-
-  return newHex;
-}
-
 // Function to convert Hex to RGB
 export function hexToRgb(
   hex: string
@@ -108,6 +70,82 @@ export function hexToHsl(
   return rgbToHsl(rgb.r, rgb.g, rgb.b);
 }
 
+// Helper function to convert a number to a 2-digit hex string
+function toHex(value: number): string {
+  const hex = Math.round(value).toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+}
+
+// Function to convert HSL to RGB
+function hslToRgb(
+  h: number,
+  s: number,
+  l: number
+): { r: number; g: number; b: number } {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+
+  let r = 0,
+    g = 0,
+    b = 0;
+
+  if (h >= 0 && h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h >= 60 && h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h >= 120 && h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h >= 180 && h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h >= 240 && h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else if (h >= 300 && h < 360) {
+    r = c;
+    g = 0;
+    b = x;
+  }
+
+  // Adjust RGB values to 0-255 range
+  r = (r + m) * 255;
+  g = (g + m) * 255;
+  b = (b + m) * 255;
+
+  return { r, g, b };
+}
+
+// Function to convert HSL to Hex
+export function hslToHex(h: number, s: number, l: number): string {
+  const { r, g, b } = hslToRgb(h, s, l);
+
+  // Convert RGB to hex
+  const hexR = toHex(r);
+  const hexG = toHex(g);
+  const hexB = toHex(b);
+
+  return `#${hexR}${hexG}${hexB}`;
+}
+
+export const adjustColorLightness = (color: string, lightness: number) => {
+  const hsl = hexToHsl(color);
+  if (!hsl) return color;
+
+  return hslToHex(hsl.hue, hsl.saturation, lightness);
+};
+
 // Convert RGB to hex
 export const rgbToHex = (r: number, g: number, b: number): string => {
   return (
@@ -155,3 +193,5 @@ export function interpolateColor(
 
   return rgbToHex(r, g, b);
 }
+
+export const MAX_LIGHTNESS = 85;
