@@ -14,11 +14,3 @@ body {
 body {
   @apply bg-white text-black font-system;
 }
-
-swiper-container {
-  @apply w-full h-[100svh] z-0;
-}
-
-.home-carousel-slide {
-  @apply max-w-2xl w-full h-[100svh] mx-auto before:bg-noise before:bg-32 before:-z-10 before:w-[100svw] before:h-[100svh] before:block before:left-1/2 before:-translate-x-1/2 before:absolute;
-}
