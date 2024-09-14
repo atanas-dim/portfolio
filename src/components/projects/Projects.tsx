@@ -1,55 +1,82 @@
-import { PROJECTS } from "@/resources/projects";
-import Image from "next/image";
-import React, { type FC } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { type FC, useRef } from "react";
+
+import { ProjectData, PROJECTS } from "@/resources/projects";
+
+const COLOURS = ["rgb(255, 0, 0)", "rgb(0, 255, 26)", "rgb(35, 1, 255)"];
 
 const Projects: FC = () => {
   return (
-    <div className="p-8 w-full h-full flex justify-center md:items-center">
-      <swiper-container
-        slides-per-view={1}
-        pagination
-        navigation
-        rewind
-        class="border border-solid border-gray-200 rounded-3xl h-full w-full max-h-[min(42rem,calc(100%_-_2rem))] shadow-inner-xl"
-      >
-        {PROJECTS.map((project, index) => {
-          return (
-            <swiper-slide
-              key={"project-" + index}
-              class="w-full h-full p-4 pb-6 flex flex-col items-center justify-center gap-2 md:gap-4 [&_*]:lowercase"
-            >
-              <Image
-                src={project.image.src}
-                alt={project.image.alt}
-                className="max-h-[70%] max-w-[70%] w-auto object-contain rounded-xl flex-shrink"
-              />
-              <span className="text-xl font-extrabold">{project.title}</span>
-              <span className="text-sm ">{project.technologies}</span>
-              <div className="flex gap-3">
-                {project.links.map((link, index) => {
-                  return (
-                    <a
-                      key={
-                        project.title.toLowerCase().split(" ").join("-") +
-                        "-link-" +
-                        index
-                      }
-                      href={link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-blue-400 px-3 py-2 rounded-lg leading-none"
-                    >
-                      {link.label}
-                    </a>
-                  );
-                })}
-              </div>
-            </swiper-slide>
-          );
-        })}
-      </swiper-container>
-    </div>
+    <section id="projects" className="w-full flex flex-col">
+      {PROJECTS.map((project, index) => {
+        return (
+          <Project
+            key={`project-container-${index}`}
+            index={index}
+            {...project}
+          />
+        );
+      })}
+    </section>
   );
 };
 
 export default Projects;
+
+type ProjectProps = ProjectData & {
+  index: number;
+};
+
+const Project: FC<ProjectProps> = ({ title, index }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top bottom",
+            scrub: true,
+          },
+        })
+        .to(contentRef.current, {
+          x: -100 + "%",
+          ease: "none",
+        });
+    },
+    { scope: containerRef, dependencies: [index] }
+  );
+
+  useGSAP(
+    () => {
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top bottom",
+            end: "top center",
+            scrub: true,
+          },
+        })
+        .to(document.body, {
+          backgroundColor: COLOURS[index],
+        });
+    },
+    { scope: containerRef, dependencies: [index] }
+  );
+
+  return (
+    <div ref={containerRef} className="w-full h-screen shrink-0">
+      <div
+        ref={contentRef}
+        className="w-full h-screen fixed inset-0 border border-solid border-black"
+        style={{ transform: `translateX(100%)` }}
+      >
+        {title}
+      </div>
+    </div>
+  );
+};

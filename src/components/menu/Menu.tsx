@@ -1,10 +1,10 @@
 "use client";
 
 import gsap from "gsap";
-import React, { useState, type FC, useRef, useEffect } from "react";
-import { Transition } from "react-transition-group";
+import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
+import { Transition } from "react-transition-group";
 
 export const MENU_ITEMS = [
   { hash: "", label: "Atanas" },

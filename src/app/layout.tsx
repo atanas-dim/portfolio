@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
 import "@/styles/globals.css";
+
+import type { Metadata } from "next";
+
 import Menu from "@/components/menu/Menu";
 
 export const metadata: Metadata = {

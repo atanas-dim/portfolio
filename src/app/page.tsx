@@ -1,14 +1,14 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { register } from "swiper/element/bundle";
+
 import ContactForm from "@/components/contact/Contact";
 import Intro from "@/components/intro/Intro";
 import { MENU_ITEMS } from "@/components/menu/Menu";
 import Projects from "@/components/projects/Projects";
 import Tools from "@/components/tools/Tools";
 import { SwiperRef } from "@/types/swiper";
-import { useEffect, useRef, useState } from "react";
-
-import { register } from "swiper/element/bundle";
 
 /**
  * When you import Swiper custom elements from node modules, we need to manually register them.
