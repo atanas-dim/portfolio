@@ -37,9 +37,7 @@ const Projects: FC = () => {
         themeColorMetaTag?.setAttribute("content", themeColor);
 
         const menuItemColorStops = colorStops.map((color) =>
-          color === "#ffffff"
-            ? adjustColorLightness("#00dac8", MAX_LIGHTNESS)
-            : color
+          color === "#ffffff" ? "#fff8cf" : color
         );
         const menuItemColor = interpolateColor(menuItemColorStops, progress);
 
