@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { type FC, useRef } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
-import { interpolateColor } from "@/utils/colors";
+import { interpolateColor, setLightness } from "@/utils/colors";
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,11 +24,11 @@ const Projects: FC = () => {
             const color = interpolateColor(
               [
                 "#ffffff",
-                "#ff0000",
+                setLightness("#D70321", 90),
                 "#ffffff",
-                "#00cd22",
+                setLightness("#39884a", 90),
                 "#ffffff",
-                "#0800ff",
+                setLightness("#0000BD", 90),
                 "#ffffff",
               ],
               progress
@@ -87,7 +87,10 @@ const Project: FC<ProjectProps> = ({ title }) => {
         className="w-full h-screen fixed inset-0"
         style={{ transform: `translateX(100%)` }}
       >
-        {title}
+        <div className="w-full h-dvh flex flex-col justify-between">
+          <div>{title}</div>
+          <div>{title}</div>
+        </div>
       </div>
     </div>
   );

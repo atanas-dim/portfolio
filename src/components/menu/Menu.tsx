@@ -1,5 +1,6 @@
 "use client";
 
+import { hexToHsl, rgbToHsl } from "@/utils/colors";
 import gsap from "gsap";
 import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
@@ -62,6 +63,24 @@ const Menu: FC = () => {
       Math.max(50, Math.floor(Math.random() * 100))
     );
 
+    const themeColorMetaTag = document.querySelector(
+      'meta[name="theme-color"]'
+    );
+
+    const themeColorHex =
+      themeColorMetaTag?.getAttribute("content") || "#ffffff";
+
+    const { hue, saturation, lightness } = hexToHsl(themeColorHex) || {
+      hue: 0,
+      saturation: 0,
+      lightness: 100,
+    };
+
+    const finalHue = hue || randomHue;
+    const finalSaturation = saturation || randomSaturation;
+    const finalLightness = Math.min(90, lightness || 100);
+    const hueOffset = 20;
+
     gsap.set(".modal", { y: 0 });
 
     gsap.set(".item", {
@@ -72,17 +91,19 @@ const Menu: FC = () => {
     gsap.set(".item-bg", {
       backgroundColor: (i) => {
         if (i === 0) {
-          return "#fff";
+          return themeColorHex;
         }
-        return `hsla(${randomHue + i * 45}, ${randomSaturation}%, 77%, 1)`;
+        return `hsla(${
+          finalHue + i * hueOffset
+        }, ${finalSaturation}%, ${finalLightness}%, 1)`;
       },
     });
 
     gsap.set(".backdrop", {
       opacity: 0,
       backgroundColor: `hsla(${
-        randomHue + MENU_ITEMS.length * 45
-      }, ${randomSaturation}%, 66%, 0.6)`,
+        finalHue + MENU_ITEMS.length * hueOffset
+      }, ${finalSaturation}%, ${finalLightness}%, 0.6)`,
       filter: "grayscale(1)",
     });
 
@@ -194,7 +215,7 @@ const Menu: FC = () => {
           className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="backdrop w-full h-full absolute top-0 left-0 bg-gray-300 backdrop-blur-sm bg-noise bg-32 opacity-0"
+            className="backdrop w-full h-full absolute top-0 left-0 bg-white backdrop-grayscale backdrop-blur-sm bg-32 opacity-0"
             onClick={toggleMenu}
           />
 
@@ -214,7 +235,7 @@ const Menu: FC = () => {
                   onClick={() => setShow(false)}
                 >
                   <span
-                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-noise bg-32"
+                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32"
                     style={{ height }}
                   />
                   <span className="label font-extrabold text-3xl">
