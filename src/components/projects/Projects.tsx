@@ -21,7 +21,6 @@ const Projects: FC = () => {
       );
 
       const setColors = (progress: number) => {
-        console.log("progress", progress);
         const colorStops = [
           "#ffffff",
           adjustColorLightness("#D70321", MAX_LIGHTNESS),
