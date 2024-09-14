@@ -57,41 +57,6 @@ const Menu: FC = () => {
     };
   }, []);
 
-  const setColorsBasedOnThemeColor = useCallback(() => {
-    const themeColorMetaTag = document.querySelector(
-      'meta[name="theme-color"]'
-    );
-
-    const themeColorHex =
-      themeColorMetaTag?.getAttribute("content") || "#ffffff";
-
-    const hueOffset = 25;
-
-    console.log({ themeColorHex });
-
-    gsap.set(".item-bg", {
-      backgroundColor: (i) => {
-        if (themeColorHex === "#ffffff") {
-          return i === 0
-            ? themeColorHex
-            : adjustColorLightness("#eb40ee", MAX_LIGHTNESS);
-        }
-        return themeColorHex;
-      },
-      filter: (i) => {
-        return i <= 0 ? "hue-rotate(0deg)" : `hue-rotate(${i * hueOffset}deg)`;
-      },
-      duration: 0.7,
-    });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", setColorsBasedOnThemeColor);
-    return () => {
-      window.removeEventListener("scroll", setColorsBasedOnThemeColor);
-    };
-  }, []);
-
   const onEnter = () => {
     if (!container.current) return;
     const containerRect = container.current.getBoundingClientRect();
@@ -103,14 +68,11 @@ const Menu: FC = () => {
 
     gsap.set(".modal", { y: 0 });
 
-    gsap.set(".item", {
+    gsap.set(".menu-item", {
       yPercent: (i) => -100 * i - shortSide,
       zIndex: (i) => MENU_ITEMS.length - i,
+      opacity: 1,
     });
-
-    setColorsBasedOnThemeColor();
-
-    gsap.set(".item", { opacity: 1 });
   };
 
   const onEntering = () => {
@@ -118,21 +80,21 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
-      .to(".item", {
+      .to(".menu-item", {
         yPercent: 0,
         stagger: 0.25,
         duration: 0.8,
         ease: "back.out",
       })
       .to(
-        ".backdrop",
+        ".menu-backdrop",
         {
           opacity: 1,
         },
         0.2
       )
       .to(
-        ".backdrop",
+        ".menu-backdrop",
         {
           filter: "grayscale(0)",
         },
@@ -153,18 +115,18 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
-      .to(".backdrop", { duration: 0.6, opacity: 0 })
+      .to(".menu-backdrop", { duration: 0.6, opacity: 0 })
       .to(
-        ".item",
+        ".menu-item",
         {
           yPercent: (i) => -100 * i - shortSide,
           stagger: -0.1,
           duration: 0.35,
           ease: "back.in(0.8)",
+          opacity: 0,
         },
         0
       )
-
       .set(".modal", { y: "-100%" });
   };
 
@@ -219,7 +181,7 @@ const Menu: FC = () => {
           className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="backdrop w-full h-full absolute top-0 left-0 bg-white backdrop-grayscale backdrop-blur-sm bg-32 opacity-0"
+            className="menu-backdrop w-full h-full absolute top-0 left-0 bg-white backdrop-grayscale backdrop-blur-sm bg-32 opacity-0"
             onClick={toggleMenu}
           />
 
@@ -234,15 +196,13 @@ const Menu: FC = () => {
               return (
                 <a
                   key={"label-" + index}
-                  className="item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
+                  className="menu-item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
                   href={"/#" + item.hash}
                   onClick={() => setShow(false)}
                 >
                   <span
-                    className={`item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32 ${
-                      index > 0 ? "transition-all duration-300" : ""
-                    }`}
-                    style={{ height }}
+                    className="menu-item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32"
+                    style={{ height, filter: `hue-rotate(${index * 25}deg)` }}
                   />
                   <span className="label font-extrabold text-3xl">
                     {item.label.toLowerCase()}

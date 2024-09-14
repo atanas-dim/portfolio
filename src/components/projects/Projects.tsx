@@ -12,13 +12,49 @@ import {
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const timeline = useRef<GSAPTimeline>();
+
   useGSAP(
     () => {
       const themeColorMetaTag = document.querySelector(
         'meta[name="theme-color"]'
       );
 
-      gsap.timeline({
+      const setColors = (progress: number) => {
+        console.log("progress", progress);
+        const colorStops = [
+          "#ffffff",
+          adjustColorLightness("#D70321", MAX_LIGHTNESS),
+          "#ffffff",
+          adjustColorLightness("#349649", MAX_LIGHTNESS),
+          "#ffffff",
+          adjustColorLightness("#0000BD", MAX_LIGHTNESS),
+          "#ffffff",
+        ];
+
+        const themeColor = interpolateColor(colorStops, progress);
+
+        document.body.style.backgroundColor = themeColor;
+        themeColorMetaTag?.setAttribute("content", themeColor);
+
+        const menuItemColorStops = colorStops.map((color) =>
+          color === "#ffffff"
+            ? adjustColorLightness("#00dac8", MAX_LIGHTNESS)
+            : color
+        );
+        const menuItemColor = interpolateColor(menuItemColorStops, progress);
+
+        gsap.set(".menu-backdrop", {
+          backgroundColor: themeColor,
+        });
+        gsap.set(".menu-item-bg", {
+          backgroundColor: (i) => (i === 0 ? themeColor : menuItemColor),
+        });
+      };
+
+      if (!timeline.current || timeline.current.progress() <= 0) setColors(0);
+
+      timeline.current = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
@@ -26,25 +62,16 @@ const Projects: FC = () => {
           scrub: true,
           onUpdate: (self) => {
             const progress = self.progress;
-            const color = interpolateColor(
-              [
-                "#ffffff",
-                adjustColorLightness("#D70321", MAX_LIGHTNESS),
-                "#ffffff",
-                adjustColorLightness("#39884a", MAX_LIGHTNESS),
-                "#ffffff",
-                adjustColorLightness("#0000BD", MAX_LIGHTNESS),
-                "#ffffff",
-              ],
-              progress
-            );
-            document.body.style.backgroundColor = color;
-            themeColorMetaTag?.setAttribute("content", color);
+            setColors(progress);
           },
+          onEnter: () => setColors(0),
+          onEnterBack: () => setColors(1),
+          onLeave: () => setColors(1),
+          onLeaveBack: () => setColors(0),
         },
       });
     },
-    { scope: containerRef, dependencies: [] }
+    { dependencies: [] }
   );
 
   return (
@@ -92,9 +119,12 @@ const Project: FC<ProjectProps> = ({ title }) => {
         className="w-full h-screen fixed inset-0"
         style={{ transform: `translateX(100%)` }}
       >
-        <div className="w-full h-dvh flex flex-col justify-between">
-          <div>{title}</div>
-          <div>{title}</div>
+        <div className="w-full h-dvh flex items-center justify-center">
+          <div className="aspect-[1178/2556] border border-black rounded-lg p-6">
+            {title}
+          </div>
+          {/* <div>{title}</div>
+          <div>{title}</div> */}
         </div>
       </div>
     </div>
