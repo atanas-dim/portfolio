@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useEffect, useRef, useState } from "react";
+import { type FC, useEffect, useRef } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import {
@@ -19,11 +19,11 @@ const Projects: FC = () => {
 
   useGSAP(
     () => {
-      const themeColorMetaTag = document.querySelector(
-        'meta[name="theme-color"]'
-      );
-
       const setColors = (progress: number) => {
+        const themeColorMetaTag = document.querySelector(
+          'meta[name="theme-color"]'
+        );
+
         const colorStops = PROJECTS.map((project, index) => {
           if (index === 0)
             return [
@@ -42,18 +42,6 @@ const Projects: FC = () => {
 
         document.body.style.backgroundColor = themeColor;
         themeColorMetaTag?.setAttribute("content", themeColor);
-
-        const menuItemColorStops = colorStops.map((color) =>
-          color === "#ffffff" ? "#fff8cf" : color
-        );
-        const menuItemColor = interpolateColor(menuItemColorStops, progress);
-
-        gsap.set(".menu-backdrop", {
-          backgroundColor: themeColor,
-        });
-        gsap.set(".menu-item-bg", {
-          backgroundColor: (i) => (i === 0 ? themeColor : menuItemColor),
-        });
       };
 
       if (!timeline.current || timeline.current.progress() <= 0) setColors(0);

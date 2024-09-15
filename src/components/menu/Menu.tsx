@@ -1,19 +1,13 @@
 "use client";
 
-import useMenuStore from "@/hooks/useMenuStore";
-import { adjustColorLightness, hexToHsl, MAX_LIGHTNESS } from "@/utils/colors";
 import gsap from "gsap";
-import React, {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
 import { Transition } from "react-transition-group";
+
+import useMenuStore from "@/hooks/useMenuStore";
+import { hexToHsl } from "@/utils/colors";
 
 export const MENU_ITEMS = [
   { hash: "", label: "Atanas" },
@@ -73,6 +67,24 @@ const Menu: FC = () => {
       zIndex: (i) => MENU_ITEMS.length - i,
       opacity: 1,
     });
+
+    const themeColorMetaTag = document.querySelector(
+      'meta[name="theme-color"]'
+    );
+
+    const themeColor = themeColorMetaTag?.getAttribute("content") || "#ffffff";
+    const randomColor = `hsl(${Math.random() * 360}, 90%, 85%)`;
+    const hslThemeColor = hexToHsl(themeColor);
+    const isThemeColorCloseToWhite = (hslThemeColor?.lightness || 0) > 95;
+    console.log(hslThemeColor?.lightness, isThemeColorCloseToWhite);
+    const menuItemColor = isThemeColorCloseToWhite ? randomColor : themeColor;
+
+    gsap.set(".menu-backdrop", {
+      backgroundColor: themeColor + "50",
+    });
+    gsap.set(".menu-item-bg", {
+      backgroundColor: (i) => (i === 0 ? themeColor : menuItemColor),
+    });
   };
 
   const onEntering = () => {
@@ -92,13 +104,6 @@ const Menu: FC = () => {
           opacity: 1,
         },
         0.2
-      )
-      .to(
-        ".menu-backdrop",
-        {
-          filter: "grayscale(0)",
-        },
-        0.8
       );
   };
 
@@ -158,6 +163,17 @@ const Menu: FC = () => {
       );
   };
 
+  // Disable scrolling when the menu is open
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflowY = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflowY = "auto";
+      document.body.style.touchAction = "auto";
+    }
+  }, [show]);
+
   return (
     <>
       <button
@@ -181,7 +197,7 @@ const Menu: FC = () => {
           className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="menu-backdrop w-full h-full absolute top-0 left-0 bg-white backdrop-grayscale backdrop-blur-sm bg-32 opacity-0"
+            className="menu-backdrop w-full h-full absolute top-0 left-0 bg-white/50 backdrop-blur-sm bg-32 opacity-0"
             onClick={toggleMenu}
           />
 
