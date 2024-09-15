@@ -4,9 +4,10 @@ import { type FC, useEffect, useRef } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import {
-  adjustColorLightness,
+  adjustColorLightnessAndSaturation,
   interpolateColor,
-  MAX_LIGHTNESS,
+  TARGET_LIGHTNESS,
+  TARGET_SATURATION,
 } from "@/utils/colors";
 
 const VIDEO_WRAPPER_CLASSES = `landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
@@ -28,12 +29,18 @@ const Projects: FC = () => {
           if (index === 0)
             return [
               "#ffffff",
-              adjustColorLightness(project.themeColor, MAX_LIGHTNESS),
+              adjustColorLightnessAndSaturation(project.themeColor, {
+                saturation: TARGET_SATURATION,
+                lightness: TARGET_LIGHTNESS,
+              }),
               "#ffffff",
             ];
           else
             return [
-              adjustColorLightness(project.themeColor, MAX_LIGHTNESS),
+              adjustColorLightnessAndSaturation(project.themeColor, {
+                saturation: TARGET_SATURATION,
+                lightness: TARGET_LIGHTNESS,
+              }),
               "#ffffff",
             ];
         }).flat();

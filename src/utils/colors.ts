@@ -139,11 +139,17 @@ export function hslToHex(h: number, s: number, l: number): string {
   return `#${hexR}${hexG}${hexB}`;
 }
 
-export const adjustColorLightness = (color: string, lightness: number) => {
+export const adjustColorLightnessAndSaturation = (
+  color: string,
+  targetValues?: { lightness?: number; saturation?: number }
+) => {
   const hsl = hexToHsl(color);
   if (!hsl) return color;
 
-  return hslToHex(hsl.hue, hsl.saturation, lightness);
+  const lightness = targetValues?.lightness || hsl.lightness;
+  const saturation = targetValues?.saturation || hsl.saturation;
+
+  return hslToHex(hsl.hue, saturation, lightness);
 };
 
 // Convert RGB to hex
@@ -194,4 +200,5 @@ export function interpolateColor(
   return rgbToHex(r, g, b);
 }
 
-export const MAX_LIGHTNESS = 80;
+export const TARGET_LIGHTNESS = 85;
+export const TARGET_SATURATION = 85;

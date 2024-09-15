@@ -7,7 +7,11 @@ import { GiHamburger } from "react-icons/gi";
 import { Transition } from "react-transition-group";
 
 import useMenuStore from "@/hooks/useMenuStore";
-import { adjustColorLightness, hexToHsl } from "@/utils/colors";
+import {
+  adjustColorLightnessAndSaturation,
+  TARGET_LIGHTNESS,
+  TARGET_SATURATION,
+} from "@/utils/colors";
 
 export const MENU_ITEMS = [
   { hash: "", label: "Atanas" },
@@ -73,16 +77,17 @@ const Menu: FC = () => {
     );
 
     const themeColor = themeColorMetaTag?.getAttribute("content") || "#ffffff";
-    const randomColor = `hsl(${Math.random() * 360}, 90%, 85%)`;
-    const hslThemeColor = hexToHsl(themeColor);
+    const randomColor = `hsl(${
+      Math.random() * 360
+    }, ${TARGET_SATURATION}%, ${TARGET_LIGHTNESS}%)`;
+
     const isThemeColorWhite = themeColor === "#ffffff";
-    const isThemeColorCloseToWhite = (hslThemeColor?.lightness || 0) > 90;
-    const adjustedThemeColor = adjustColorLightness(themeColor, 85);
-    const menuItemColor = isThemeColorWhite
-      ? randomColor
-      : isThemeColorCloseToWhite
-      ? adjustedThemeColor
-      : themeColor;
+
+    const adjustedThemeColor = adjustColorLightnessAndSaturation(themeColor, {
+      saturation: TARGET_SATURATION,
+      lightness: TARGET_LIGHTNESS,
+    });
+    const menuItemColor = isThemeColorWhite ? randomColor : adjustedThemeColor;
 
     gsap.set(".menu-backdrop", {
       backgroundColor: themeColor + "50",

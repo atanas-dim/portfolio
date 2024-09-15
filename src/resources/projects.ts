@@ -40,7 +40,7 @@ export const PROJECTS: ProjectData[] = [
   },
 
   {
-    themeColor: "#349649",
+    themeColor: "#00512F",
     title: "Reddit Client",
     technologies: "React, Redux, Reddit JSON API",
     description:
