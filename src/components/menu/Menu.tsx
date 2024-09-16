@@ -188,7 +188,7 @@ const Menu: FC = () => {
     <>
       <button
         id="menu-toggle"
-        className="fixed z-10 bottom-3 right-3 flex w-12 h-12 justify-center items-center"
+        className="fixed z-50 bottom-3 right-3 flex w-12 h-12 justify-center items-center"
         onClick={toggleMenu}
       >
         {show ? <CgClose size="32" /> : <GiHamburger size="40" />}
@@ -204,7 +204,7 @@ const Menu: FC = () => {
       >
         <div
           ref={container}
-          className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
+          className="z-40 modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
             className="menu-backdrop w-full h-full absolute top-0 left-0 bg-white/50 backdrop-blur-sm bg-32 opacity-0"

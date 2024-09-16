@@ -59,6 +59,9 @@ const Projects: FC = () => {
           start: "top top",
           end: "bottom bottom",
           scrub: true,
+          preventOverlaps: true,
+          fastScrollEnd: true,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             const progress = self.progress;
             setColors(progress);
@@ -69,6 +72,15 @@ const Projects: FC = () => {
           onLeaveBack: () => setColors(0),
         },
       });
+
+      const onResize = () => {
+        timeline.current?.scrollTrigger?.refresh();
+      };
+      window.addEventListener("resize", onResize);
+
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
     },
     { dependencies: [] }
   );
@@ -96,12 +108,15 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
 
   useGSAP(
     () => {
-      gsap
+      const timeline = gsap
         .timeline({
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top bottom",
             scrub: true,
+            preventOverlaps: true,
+            fastScrollEnd: true,
+            invalidateOnRefresh: true,
             onUpdate: (self) => {
               const video = videoRef.current;
               if (!video) return;
@@ -120,6 +135,15 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
           x: -100 + "%",
           ease: "none",
         });
+
+      const onResize = () => {
+        timeline.scrollTrigger?.refresh();
+      };
+      window.addEventListener("resize", onResize);
+
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
     },
     { scope: containerRef }
   );
@@ -146,7 +170,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     <div ref={containerRef} className="w-full h-screen shrink-0">
       <div
         ref={contentRef}
-        className="w-full h-screen fixed inset-0"
+        className="w-full h-screen fixed inset-0 z-10"
         style={{
           transform: `translateX(100%)`,
         }}
