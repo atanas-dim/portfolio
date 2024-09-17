@@ -13,6 +13,7 @@ const Tools: FC<Props> = () => {
 
   useGSAP(() => {
     gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
+    gsap.set("#tools-wrapper", { y: 40 });
 
     const timeline = gsap
       .timeline({
@@ -24,33 +25,28 @@ const Tools: FC<Props> = () => {
           preventOverlaps: true,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
-          onEnter: () => {
-            gsap.set("#tools-wrapper", {
-              position: "fixed",
-            });
-          },
-          onEnterBack: () => {
-            gsap.set("#tools-wrapper", {
-              position: "fixed",
-            });
-          },
-          onLeave: () => {
-            gsap.set("#tools-wrapper", {
-              position: "static",
-            });
-          },
-          onLeaveBack: () => {
-            gsap.set("#tools-wrapper", {
-              position: "static",
-            });
-          },
+          pin: containerRef.current,
+          pinSpacing: false,
         },
       })
-      .to(".tool", {
-        y: 0,
-        opacity: 1,
-        stagger: 0.1,
-      })
+      .addLabel("entry")
+      .to(
+        ".tool",
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.1,
+        },
+        "entry"
+      )
+      .to(
+        "#tools-wrapper",
+        {
+          y: 0,
+          duration: 2,
+        },
+        "entry"
+      )
       .addLabel("brightess-anim")
       .to(
         ".tool",
@@ -70,7 +66,7 @@ const Tools: FC<Props> = () => {
       )
       .addLabel("exit")
       .to(
-        " #tools-wrapper",
+        "#tools-wrapper",
         {
           y: -40,
           duration: 2,
@@ -98,10 +94,14 @@ const Tools: FC<Props> = () => {
   });
 
   return (
-    <section ref={containerRef} id="tools" className="w-full h-[150svh]">
+    <section
+      ref={containerRef}
+      id="tools"
+      className="w-full h-svh !top-0 !transform-none"
+    >
       <div
         id="tools-wrapper"
-        className="fixed top-0 left-0 w-full h-[100svh] p-8 flex flex-col justify-center gap-3 font-bold lowercase"
+        className="w-full h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase"
       >
         <div className="flex flex-wrap gap-x-4 gap-y-3">
           {BASE_TOOLS.map((tool, index) => {

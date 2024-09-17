@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import Link from "next/link";
 import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
@@ -14,7 +15,7 @@ import {
 } from "@/utils/colors";
 
 export const MENU_ITEMS = [
-  { hash: "", label: "Atanas" },
+  { hash: "intro", label: "Atanas" },
   { hash: "projects", label: "Projects" },
   { hash: "tools", label: "Tools" },
   { hash: "contact", label: "Contact" },
@@ -220,11 +221,24 @@ const Menu: FC = () => {
           >
             {MENU_ITEMS.map((item, index) => {
               return (
-                <a
+                <button
                   key={"label-" + index}
                   className="menu-item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
-                  href={"/#" + item.hash}
-                  onClick={() => setShow(false)}
+                  onClick={() => {
+                    setShow(false);
+                    const element = document.getElementById(item.hash);
+
+                    if (element) {
+                      gsap.delayedCall(0.6, () => {
+                        window.location.hash = item.hash;
+
+                        element.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      });
+                    }
+                  }}
                 >
                   <span
                     className="menu-item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32"
@@ -233,7 +247,7 @@ const Menu: FC = () => {
                   <span className="label font-extrabold text-3xl">
                     {item.label.toLowerCase()}
                   </span>
-                </a>
+                </button>
               );
             })}
           </div>

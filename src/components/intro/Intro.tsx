@@ -15,26 +15,11 @@ const Intro: FC = () => {
             start: "top top",
             end: "bottom center",
             scrub: 2,
-            onEnter: () => {
-              gsap.set("#intro-content", {
-                position: "fixed",
-              });
-            },
-            onEnterBack: () => {
-              gsap.set("#intro-content", {
-                position: "fixed",
-              });
-            },
-            onLeave: () => {
-              gsap.set("#intro-content", {
-                position: "static",
-              });
-            },
-            onLeaveBack: () => {
-              gsap.set("#intro-content", {
-                position: "static",
-              });
-            },
+            preventOverlaps: true,
+            fastScrollEnd: true,
+            invalidateOnRefresh: true,
+            pin: "#intro-content",
+            pinSpacing: false,
           },
         })
         .to("h1, h2, a", {
@@ -50,7 +35,7 @@ const Intro: FC = () => {
     <section id="intro" ref={containerRef} className="w-full h-svh">
       <div
         id="intro-content"
-        className="w-full h-svh fixed inset-0 flex justify-center items-center flex-col p-8"
+        className="w-full h-svh flex justify-center items-center flex-col p-8"
       >
         <h1 className="text-4xl md:text-5xl font-extrabold md:mb-2">
           atanas dimitrov

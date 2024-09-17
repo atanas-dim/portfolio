@@ -10,8 +10,8 @@ import {
   TARGET_SATURATION,
 } from "@/utils/colors";
 
-const VIDEO_WRAPPER_CLASSES = `landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
-const VIDEO_PLAYER_CLASSES = `aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
+const VIDEO_WRAPPER_CLASSES = ` landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
+const VIDEO_PLAYER_CLASSES = `shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -175,7 +175,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
           transform: `translateX(100%)`,
         }}
       >
-        <div className="w-full h-svh flex items-center justify-center ">
+        <div className="w-full h-svh flex items-center justify-center">
           <div className={VIDEO_WRAPPER_CLASSES}>
             {videoSrc ? (
               <video
@@ -192,6 +192,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
                 className={VIDEO_PLAYER_CLASSES}
                 style={{
                   backgroundColor: themeColor,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 {title}
