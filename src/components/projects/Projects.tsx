@@ -6,7 +6,7 @@ import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = `bg-[var(--shadow-color1)] animate-shadow-pulse landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
+const VIDEO_WRAPPER_CLASSES = `bg-[var(--shadow-color1)] relative landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
 
 const Projects: FC = () => {
@@ -33,7 +33,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const adjustedColor = useMemo(
-    () => adjustColorLightnessAndSaturation(themeColor, { lightness: 80 }),
+    () => adjustColorLightnessAndSaturation(themeColor, { lightness: 75 }),
     [themeColor]
   );
 
@@ -97,6 +97,17 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const selector = gsap.utils.selector(containerRef);
+    gsap.to(selector(".glow"), {
+      x: gsap.utils.random(-20, 20, 10),
+      y: gsap.utils.random(-20, 30, 10),
+      duration: gsap.utils.random(8, 12, 0.75),
+      yoyo: true,
+      repeat: -1,
+    });
+  }, []);
+
   return (
     <div ref={containerRef} className="w-full h-screen shrink-0 ">
       <div
@@ -116,6 +127,18 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               "--shadow-color3": shiftHue(adjustedColor, 75) + "50",
             }}
           >
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
+            />
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
+            />
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
+            />
             {videoSrc ? (
               <video
                 ref={videoRef}
