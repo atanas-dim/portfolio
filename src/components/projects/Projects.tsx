@@ -6,7 +6,7 @@ import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = `bg-white animate-shadow-pulse landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
+const VIDEO_WRAPPER_CLASSES = `bg-[var(--shadow-color1)] animate-shadow-pulse landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
 
 const Projects: FC = () => {
@@ -113,7 +113,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               // @ts-expect-error
               "--shadow-color1": adjustedColor + "50",
               "--shadow-color2": shiftHue(adjustedColor, 25) + "50",
-              "--shadow-color3": shiftHue(adjustedColor, 65) + "50",
+              "--shadow-color3": shiftHue(adjustedColor, 75) + "50",
             }}
           >
             {videoSrc ? (

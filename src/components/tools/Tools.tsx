@@ -97,7 +97,7 @@ const Tools: FC<Props> = () => {
     <section
       ref={containerRef}
       id="tools"
-      className="w-full h-svh !top-0 !transform-none"
+      className="w-full h-[200svh] !top-0 !transform-none"
     >
       <div
         id="tools-wrapper"
