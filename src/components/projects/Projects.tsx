@@ -1,89 +1,16 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useEffect, useRef } from "react";
+import { type FC, useEffect, useMemo, useRef } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
-import {
-  adjustColorLightnessAndSaturation,
-  interpolateColor,
-  TARGET_LIGHTNESS,
-  TARGET_SATURATION,
-} from "@/utils/colors";
+import { adjustColorLightnessAndSaturation } from "@/utils/colors";
+import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = ` landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
+const VIDEO_WRAPPER_CLASSES = `bg-white animate-shadow-pulse landscape:p-[calc(0.02*80vmin)] landscape:rounded-[calc(0.08*80vmin)] portrait:p-[calc(0.02*70vmax)] portrait:rounded-[calc(0.08*70vmax)] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black landscape:h-[80vmin] landscape:rounded-[calc(0.06*80vmin)] portrait:h-[70vmax] portrait:rounded-[calc(0.06*70vmax)]`;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const timeline = useRef<GSAPTimeline>();
-
-  useGSAP(
-    () => {
-      const setColors = (progress: number) => {
-        const themeColorMetaTag = document.querySelector(
-          'meta[name="theme-color"]'
-        );
-
-        const colorStops = PROJECTS.map((project, index) => {
-          if (index === 0)
-            return [
-              "#ffffff",
-              adjustColorLightnessAndSaturation(project.themeColor, {
-                saturation: TARGET_SATURATION,
-                lightness: TARGET_LIGHTNESS,
-              }),
-              "#ffffff",
-            ];
-          else
-            return [
-              adjustColorLightnessAndSaturation(project.themeColor, {
-                saturation: TARGET_SATURATION,
-                lightness: TARGET_LIGHTNESS,
-              }),
-              "#ffffff",
-            ];
-        }).flat();
-
-        const themeColor = interpolateColor(colorStops, progress);
-
-        document.body.style.backgroundColor = themeColor;
-        themeColorMetaTag?.setAttribute("content", themeColor);
-      };
-
-      if (!timeline.current || timeline.current.progress() <= 0) setColors(0);
-
-      timeline.current = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-          preventOverlaps: true,
-          fastScrollEnd: true,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            setColors(progress);
-          },
-          onEnter: () => setColors(0),
-          onEnterBack: () => setColors(1),
-          onLeave: () => setColors(1),
-          onLeaveBack: () => setColors(0),
-        },
-      });
-
-      const onResize = () => {
-        timeline.current?.scrollTrigger?.refresh();
-      };
-      window.addEventListener("resize", onResize);
-
-      return () => {
-        window.removeEventListener("resize", onResize);
-      };
-    },
-    { dependencies: [] }
-  );
 
   return (
     // PY needed to make the colours show in full when each projects is exactly in the middle of the screen
@@ -105,6 +32,10 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const adjustedColor = useMemo(
+    () => adjustColorLightnessAndSaturation(themeColor, { lightness: 80 }),
+    [themeColor]
+  );
 
   useGSAP(
     () => {
@@ -167,7 +98,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-screen shrink-0">
+    <div ref={containerRef} className="w-full h-screen shrink-0 ">
       <div
         ref={contentRef}
         className="w-full h-screen fixed inset-0 z-10"
@@ -176,7 +107,15 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         }}
       >
         <div className="w-full h-svh flex items-center justify-center">
-          <div className={VIDEO_WRAPPER_CLASSES}>
+          <div
+            className={VIDEO_WRAPPER_CLASSES}
+            style={{
+              // @ts-expect-error
+              "--shadow-color1": adjustedColor + "50",
+              "--shadow-color2": shiftHue(adjustedColor, 25) + "50",
+              "--shadow-color3": shiftHue(adjustedColor, 65) + "50",
+            }}
+          >
             {videoSrc ? (
               <video
                 ref={videoRef}

@@ -1,18 +1,12 @@
 "use client";
 
 import gsap from "gsap";
-import Link from "next/link";
 import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
 import { Transition } from "react-transition-group";
 
 import useMenuStore from "@/hooks/useMenuStore";
-import {
-  adjustColorLightnessAndSaturation,
-  TARGET_LIGHTNESS,
-  TARGET_SATURATION,
-} from "@/utils/colors";
 
 export const MENU_ITEMS = [
   { hash: "intro", label: "Atanas" },
@@ -73,28 +67,10 @@ const Menu: FC = () => {
       opacity: 1,
     });
 
-    const themeColorMetaTag = document.querySelector(
-      'meta[name="theme-color"]'
-    );
+    const randomColor = `hsl(${Math.random() * 360}, 85%, 85%)`;
 
-    const themeColor = themeColorMetaTag?.getAttribute("content") || "#ffffff";
-    const randomColor = `hsl(${
-      Math.random() * 360
-    }, ${TARGET_SATURATION}%, ${TARGET_LIGHTNESS}%)`;
-
-    const isThemeColorWhite = themeColor === "#ffffff";
-
-    const adjustedThemeColor = adjustColorLightnessAndSaturation(themeColor, {
-      saturation: TARGET_SATURATION,
-      lightness: TARGET_LIGHTNESS,
-    });
-    const menuItemColor = isThemeColorWhite ? randomColor : adjustedThemeColor;
-
-    gsap.set(".menu-backdrop", {
-      backgroundColor: themeColor + "50",
-    });
     gsap.set(".menu-item-bg", {
-      backgroundColor: (i) => (i === 0 ? themeColor : menuItemColor),
+      backgroundColor: (i) => (i === 0 ? "#ffffff" : randomColor),
     });
   };
 

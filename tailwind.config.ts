@@ -25,6 +25,21 @@ const config: Config = {
         "inner-xl":
           "inset 0 0px 25px 5px rgb(0 0 0 / 0.1), inset 0 8px 10px -6px rgb(0 0 0 / 0.1)",
       },
+      keyframes: {
+        "shadow-pulse": {
+          "0%, 100%": {
+            boxShadow:
+              "20px 20px 32px var(--shadow-color1), -20px -10px 30px var(--shadow-color2), 20px -20px 42px var(--shadow-color3)",
+          },
+          "50%": {
+            boxShadow:
+              "-20px -20px 42px var(--shadow-color1), 20px 10px 40px var(--shadow-color2), -20px 20px 48px var(--shadow-color3)",
+          },
+        },
+      },
+      animation: {
+        "shadow-pulse": "shadow-pulse 12s ease-in-out infinite",
+      },
     },
   },
   plugins: [],
