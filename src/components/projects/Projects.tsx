@@ -67,15 +67,14 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
           ease: "none",
         });
 
-      const onOrientationChange = () => {
-        console.log("orientation change");
+      const onResize = () => {
         timeline.scrollTrigger?.refresh();
       };
 
-      window.addEventListener("orientationchange", onOrientationChange);
+      window.addEventListener("resize", onResize);
 
       return () => {
-        window.removeEventListener("orientationchange", onOrientationChange);
+        window.removeEventListener("resize", onResize);
       };
     },
     { scope: containerRef }
