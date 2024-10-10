@@ -67,13 +67,15 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
           ease: "none",
         });
 
-      const onResize = () => {
+      const onOrientationChange = () => {
+        console.log("orientation change");
         timeline.scrollTrigger?.refresh();
       };
-      window.addEventListener("resize", onResize);
+
+      window.addEventListener("orientationchange", onOrientationChange);
 
       return () => {
-        window.removeEventListener("resize", onResize);
+        window.removeEventListener("orientationchange", onOrientationChange);
       };
     },
     { scope: containerRef }
@@ -113,7 +115,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     gsap.to(selector(".glow"), {
       x: (i) => (i % 2 ? randomPosX() : randomNegX()),
       y: (i) => (i % 2 ? randomPosY() : randomNegY()),
-      duration: randomDuration(),
+      duration: () => randomDuration(),
       yoyo: true,
       repeat: -1,
     });

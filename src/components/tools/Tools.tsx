@@ -83,13 +83,13 @@ const Tools: FC<Props> = () => {
         "exit"
       );
 
-    const onResize = () => {
+    const onOrientationChange = () => {
       timeline.scrollTrigger?.refresh();
     };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onOrientationChange);
 
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onOrientationChange);
     };
   });
 
