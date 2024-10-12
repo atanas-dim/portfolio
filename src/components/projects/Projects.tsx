@@ -38,66 +38,42 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   );
   const [isActive, setIsActive] = useState(false);
 
-  useGSAP(
-    () => {
-      let timeline: gsap.core.Timeline | undefined = undefined;
+  useEffect(() => {
+    const onScroll = () => {
+      if (!containerRef.current) return;
 
-      const createTimeline = () => {
-        timeline?.kill();
-        gsap.set(contentRef.current, {
-          x: 100 + "%",
-        });
+      const isActive =
+        containerRef.current?.offsetTop < window.scrollY &&
+        window.scrollY <
+          containerRef.current.offsetTop + containerRef.current.offsetHeight;
 
-        timeline = gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top bottom",
-              scrub: true,
-              preventOverlaps: true,
-              fastScrollEnd: true,
-              invalidateOnRefresh: true,
-              onUpdate: (scrollTrigger) => {
-                setIsActive(scrollTrigger.isActive);
+      setIsActive(isActive);
 
-                const video = videoRef.current;
-                if (!video) return;
+      const progress =
+        (window.scrollY - containerRef.current.offsetTop) /
+        containerRef.current.offsetHeight;
 
-                const progress = scrollTrigger.progress;
+      const x =
+        Math.min(
+          100,
+          Math.max(-100, gsap.utils.interpolate(0, -100, progress))
+        ) + "%";
 
-                if (progress >= 0.35 && progress <= 0.65) {
-                  video.play();
-                } else {
-                  video.pause();
-                }
-              },
-            },
-          })
-          .to(contentRef.current, {
-            x: -100 + "%",
-            ease: "none",
-          });
-      };
+      if (title === "Searching Mapbox") console.log(progress, title, x);
 
-      createTimeline();
+      gsap.set(contentRef.current, {
+        x,
+      });
+    };
 
-      window.addEventListener("orientationchange", createTimeline);
+    onScroll();
 
-      const onResize = () => {
-        const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
-        if (isIos) return;
-        createTimeline();
-      };
+    window.addEventListener("scroll", onScroll);
 
-      window.addEventListener("resize", onResize);
-
-      return () => {
-        window.removeEventListener("orientationchange", createTimeline);
-        window.removeEventListener("resize", onResize);
-      };
-    },
-    { scope: containerRef }
-  );
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -117,7 +93,8 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     };
   }, []);
 
-  useEffect(() => {
+  useGSAP(() => {
+    if (isActive) console.log("isActive", isActive, title);
     const selector = gsap.utils.selector(containerRef);
     const randomNegX = gsap.utils.random(-40, -16, 2, true);
     const randomPosX = gsap.utils.random(16, 40, 2, true);
@@ -167,13 +144,10 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   }, [isActive]);
 
   return (
-    <div ref={containerRef} className="w-full h-screen shrink-0 ">
+    <div ref={containerRef} className="w-full h-screen shrink-0">
       <div
         ref={contentRef}
-        className="w-full h-screen fixed inset-0 z-10"
-        style={{
-          transform: `translateX(100%)`,
-        }}
+        className="w-full h-svh fixed inset-0 z-10 translate-x-[100%]"
       >
         <div className="w-full h-svh flex items-center justify-center">
           <div

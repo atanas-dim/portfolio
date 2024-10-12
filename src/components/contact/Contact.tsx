@@ -15,7 +15,7 @@ const ContactForm: FC = () => {
         async
         defer
       ></Script>
-      <section id="contact" className="w-full h-screen min-h-[600px]">
+      <section id="contact" className="w-full h-svh min-h-[600px]">
         <div className="mx-auto max-w-lg size-full flex justify-center items-center flex-col gap-6 p-8">
           {state.succeeded && (
             <p className="text-xl font-extrabold">thanks for your message!</p>

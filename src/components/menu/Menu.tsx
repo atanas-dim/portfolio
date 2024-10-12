@@ -218,12 +218,9 @@ const Menu: FC = () => {
 
                         const el = document.getElementById(item.hash);
 
-                        const offsetTop = el?.offsetTop || 0;
-
-                        window.scrollTo({
-                          left: 0,
-                          top: offsetTop,
+                        el?.scrollIntoView({
                           behavior: "smooth",
+                          block: "start",
                         });
                       });
                     }

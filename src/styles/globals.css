@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 :root {
-  /* --phone-height-landscape: min(760px, 80vmin);
-  --phone-height-portrait: min(760px, 70vmax); */
   --phone-height: min(760px, 80vmin);
 }
 
