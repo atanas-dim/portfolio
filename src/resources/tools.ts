@@ -24,25 +24,30 @@ export const MAIN_TOOLS: SkillDef[] = [
   { label: "React", color: colors.cyan[400] },
   { label: "TypeScript", color: colors.sky[400] },
   { label: "NextJS", color: colors.blue[400] },
-  { label: "MUI", color: colors.blue[400] },
   { label: "TailwindCSS", color: colors.purple[400] },
   { label: "SASS", color: colors.fuchsia[400] },
+  { label: "MUI", color: colors.blue[400] },
   { label: "Supabase", color: colors.emerald[400] },
   { label: "Firebase", color: colors.orange[400] },
   { label: "MongoDB", color: colors.green[400] },
-  { label: "AWS", color: colors.orange[400] },
-  { label: "React Native", color: colors.cyan[400] },
-];
-
-export const ADDITIONAL_TOOLS: SkillDef[] = [
   {
     label: "GSAP",
     color: colors.lime[400],
   },
+  { label: "AWS", color: colors.orange[400] },
+];
+
+export const ADDITIONAL_TOOLS: SkillDef[] = [
+  {
+    label: "PostgreSQL",
+    color: colors.sky[400],
+  },
+  { label: "GraphQL", color: colors.pink[400] },
   {
     label: "Framer Motion",
     color: colors.purple[400],
   },
+  { label: "React Native", color: colors.cyan[400] },
   {
     label: "Git",
     color: colors.orange[400],
@@ -51,14 +56,7 @@ export const ADDITIONAL_TOOLS: SkillDef[] = [
     label: "styled-components",
     color: colors.fuchsia[400],
   },
-  {
-    label: "Gatsby",
-    color: colors.violet[400],
-  },
-  {
-    label: "PostgreSQL",
-    color: colors.sky[400],
-  },
+
   {
     label: "i18next",
     color: colors.teal[400],

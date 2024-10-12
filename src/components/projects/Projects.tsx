@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useEffect, useMemo, useRef } from "react";
+import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
@@ -36,45 +36,51 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     () => adjustColorLightnessAndSaturation(themeColor, { lightness: 72 }),
     [themeColor]
   );
+  const [isActive, setIsActive] = useState(false);
 
   useGSAP(
     () => {
-      const timeline = gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            scrub: true,
-            preventOverlaps: true,
-            fastScrollEnd: true,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const video = videoRef.current;
-              if (!video) return;
+      let timeline: gsap.core.Timeline | undefined = undefined;
 
-              const progress = self.progress;
+      const onOrientationChange = () => {
+        timeline?.scrollTrigger?.kill();
+        timeline = gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top bottom",
+              scrub: true,
+              preventOverlaps: true,
+              fastScrollEnd: true,
+              invalidateOnRefresh: true,
+              onUpdate: (scrollTrigger) => {
+                setIsActive(scrollTrigger.isActive);
 
-              if (progress >= 0.35 && progress <= 0.65) {
-                video.play();
-              } else {
-                video.pause();
-              }
+                const video = videoRef.current;
+                if (!video) return;
+
+                const progress = scrollTrigger.progress;
+
+                if (progress >= 0.35 && progress <= 0.65) {
+                  video.play();
+                } else {
+                  video.pause();
+                }
+              },
             },
-          },
-        })
-        .to(contentRef.current, {
-          x: -100 + "%",
-          ease: "none",
-        });
-
-      const onResize = () => {
-        timeline.scrollTrigger?.refresh();
+          })
+          .to(contentRef.current, {
+            x: -100 + "%",
+            ease: "none",
+          });
       };
 
-      window.addEventListener("resize", onResize);
+      onOrientationChange();
+
+      window.addEventListener("orientationchange", onOrientationChange);
 
       return () => {
-        window.removeEventListener("resize", onResize);
+        window.removeEventListener("orientationchange", onOrientationChange);
       };
     },
     { scope: containerRef }
@@ -99,6 +105,8 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   }, []);
 
   useEffect(() => {
+    if (!isActive) return;
+
     const selector = gsap.utils.selector(containerRef);
     const randomNegX = gsap.utils.random(-30, -10, 2, true);
     const randomPosX = gsap.utils.random(10, 30, 2, true);
@@ -107,18 +115,38 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     const randomDuration = gsap.utils.random(7, 10, 0.5, true);
 
     gsap.set(selector(".glow"), {
-      x: (i) => (i % 2 ? randomNegX() : randomPosX()),
-      y: (i) => (i % 2 ? randomNegY() : randomPosY()),
+      x: (i) => {
+        if (i === 0) return randomNegX();
+        if (i === 1) return randomPosX();
+        if (i === 2) return randomPosX();
+        return 0;
+      },
+      y: (i) => {
+        if (i === 0) return randomNegY();
+        if (i === 1) return randomPosY();
+        if (i === 2) return randomNegY();
+        return 0;
+      },
     });
 
     gsap.to(selector(".glow"), {
-      x: (i) => (i % 2 ? randomPosX() : randomNegX()),
-      y: (i) => (i % 2 ? randomPosY() : randomNegY()),
+      x: (i) => {
+        if (i === 0) return randomPosX();
+        if (i === 1) return randomNegX();
+        if (i === 2) return randomNegX();
+        return 0;
+      },
+      y: (i) => {
+        if (i === 0) return randomPosY();
+        if (i === 1) return randomNegY();
+        if (i === 2) return randomPosY();
+        return 0;
+      },
       duration: () => randomDuration(),
       yoyo: true,
       repeat: -1,
     });
-  }, []);
+  }, [isActive]);
 
   return (
     <div ref={containerRef} className="w-full h-screen shrink-0 ">

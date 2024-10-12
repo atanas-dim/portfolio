@@ -209,7 +209,7 @@ const Menu: FC = () => {
                         window.location.hash = item.hash;
 
                         element.scrollIntoView({
-                          behavior: "smooth",
+                          behavior: "instant",
                           block: "start",
                         });
                       });

@@ -2,7 +2,8 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import React, { type FC, useRef } from "react";
+import React, { type FC, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import { ADDITIONAL_TOOLS, BASE_TOOLS, MAIN_TOOLS } from "@/resources/tools";
 
@@ -10,88 +11,95 @@ type Props = {};
 
 const Tools: FC<Props> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isActive, setIsActive] = useState(false);
 
   useGSAP(() => {
-    gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
-    gsap.set("#tools-wrapper", { y: 40 });
+    let timeline: gsap.core.Timeline | undefined = undefined;
 
-    const timeline = gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top bottom",
-          end: "bottom center",
-          scrub: 1,
-          preventOverlaps: true,
-          fastScrollEnd: true,
-          invalidateOnRefresh: true,
-          pin: containerRef.current,
-          pinSpacing: false,
-        },
-      })
-      .addLabel("entry")
-      .to(
-        ".tool",
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.1,
-        },
-        "entry"
-      )
-      .to(
-        "#tools-wrapper",
-        {
-          y: 0,
-          duration: 2,
-        },
-        "entry"
-      )
-      .addLabel("brightess-anim")
-      .to(
-        ".tool",
-        {
-          filter: "brightness(1)",
-          stagger: -0.1,
-        },
-        "brightess-anim"
-      )
-      .to(
-        ".tool",
-        {
-          filter: "brightness(0)",
-          stagger: -0.1,
-        },
-        "brightess-anim+=0.5"
-      )
-      .addLabel("exit")
-      .to(
-        "#tools-wrapper",
-        {
-          y: -40,
-          duration: 2,
-        },
-        "exit"
-      )
-      .to(
-        ".tool",
-        {
-          y: -16,
-          opacity: 0,
-          stagger: -0.05,
-        },
-        "exit"
-      );
+    const onOrientationChange = () => {
+      timeline?.scrollTrigger?.kill();
 
-    const onResize = () => {
-      timeline.scrollTrigger?.refresh();
+      gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
+      gsap.set("#tools-wrapper", { y: 40 });
+
+      timeline = gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top bottom",
+            end: "bottom center",
+            scrub: 1,
+            preventOverlaps: true,
+            fastScrollEnd: true,
+            invalidateOnRefresh: true,
+            onUpdate: (scrollTrigger) => {
+              setIsActive(scrollTrigger.isActive);
+            },
+          },
+        })
+        .addLabel("entry")
+        .to(
+          ".tool",
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.1,
+          },
+          "entry"
+        )
+        .to(
+          "#tools-wrapper",
+          {
+            y: 0,
+            duration: 2,
+          },
+          "entry"
+        )
+        .addLabel("brightess-anim")
+        .to(
+          ".tool",
+          {
+            filter: "brightness(1)",
+            stagger: -0.1,
+          },
+          "brightess-anim"
+        )
+        .to(
+          ".tool",
+          {
+            filter: "brightness(0)",
+            stagger: -0.1,
+          },
+          "brightess-anim+=0.5"
+        )
+        .addLabel("exit")
+        .to(
+          "#tools-wrapper",
+          {
+            y: -40,
+            duration: 2,
+          },
+          "exit"
+        )
+        .to(
+          ".tool",
+          {
+            y: -16,
+            opacity: 0,
+            stagger: -0.05,
+          },
+          "exit"
+        );
     };
-    window.addEventListener("resize", onResize);
+
+    onOrientationChange();
+
+    window.addEventListener("orientationchange", onOrientationChange);
 
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onOrientationChange);
     };
-  });
+  }, []);
 
   return (
     <section
@@ -101,7 +109,10 @@ const Tools: FC<Props> = () => {
     >
       <div
         id="tools-wrapper"
-        className="w-full h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase"
+        className={twMerge(
+          "w-full h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
+          isActive && "fixed top-0 left-0"
+        )}
       >
         <div className="flex flex-wrap gap-x-4 gap-y-3">
           {BASE_TOOLS.map((tool, index) => {

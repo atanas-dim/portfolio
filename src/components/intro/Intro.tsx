@@ -1,14 +1,23 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useRef } from "react";
+import { type FC, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import { SOCIAL_LINKS } from "@/resources/socialLinks";
 
 const Intro: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  useGSAP(
-    () => {
-      gsap
+  const [isActive, setIsActive] = useState(false);
+
+  useGSAP(() => {
+    let timeline: gsap.core.Timeline | undefined = undefined;
+
+    const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
+
+    const onOrientationChange = () => {
+      timeline?.scrollTrigger?.kill();
+
+      timeline = gsap
         .timeline({
           scrollTrigger: {
             trigger: containerRef.current,
@@ -18,24 +27,38 @@ const Intro: FC = () => {
             preventOverlaps: true,
             fastScrollEnd: true,
             invalidateOnRefresh: true,
-            pin: "#intro-content",
-            pinSpacing: false,
+            onRefresh: () => {
+              window.scrollTo(0, window.scrollY + 1);
+            },
+            onUpdate: (scrollTrigger) => {
+              setIsActive(scrollTrigger.isActive || window.scrollY <= 0);
+            },
           },
         })
-        .to("h1, h2, a", {
+        .to(els, {
           opacity: 0,
           y: -16,
           stagger: 0.2,
         });
-    },
-    { scope: containerRef }
-  );
+    };
+
+    onOrientationChange();
+
+    window.addEventListener("orientationchange", onOrientationChange);
+
+    return () => {
+      window.removeEventListener("orientationchange", onOrientationChange);
+    };
+  }, []);
 
   return (
     <section id="intro" ref={containerRef} className="w-full h-svh">
       <div
         id="intro-content"
-        className="w-full h-svh flex justify-center items-center flex-col p-8"
+        className={twMerge(
+          "w-full h-svh flex justify-center items-center flex-col p-8",
+          isActive && "fixed top-0 left-0"
+        )}
       >
         <h1 className="text-4xl md:text-5xl font-extrabold md:mb-2">
           atanas dimitrov
