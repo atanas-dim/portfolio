@@ -58,7 +58,6 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               fastScrollEnd: true,
               invalidateOnRefresh: true,
               onUpdate: (scrollTrigger) => {
-                console.log("on update", title);
                 setIsActive(scrollTrigger.isActive);
 
                 const video = videoRef.current;

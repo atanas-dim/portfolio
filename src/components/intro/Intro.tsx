@@ -16,6 +16,7 @@ const Intro: FC = () => {
 
     const createTimeline = () => {
       timeline?.kill();
+      gsap.set(els, { opacity: 1, y: 0 });
 
       timeline = gsap
         .timeline({
