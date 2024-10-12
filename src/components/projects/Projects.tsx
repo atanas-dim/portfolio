@@ -118,11 +118,10 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   }, []);
 
   useEffect(() => {
-    if (!isActive) return;
     const selector = gsap.utils.selector(containerRef);
     const randomNegX = gsap.utils.random(-40, -16, 2, true);
     const randomPosX = gsap.utils.random(16, 40, 2, true);
-    const randomNegY = gsap.utils.random(-20, -10, 2, true);
+    const randomNegY = gsap.utils.random(-30, -10, 2, true);
     const randomPosY = gsap.utils.random(16, 40, 2, true);
     const randomDuration = gsap.utils.random(5, 9, 0.5, true);
 
@@ -154,10 +153,12 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         if (i === 2) return randomPosY();
         return 0;
       },
-
+      scaleX: 0.85,
+      scaleY: 0.95,
       duration: () => randomDuration(),
       yoyo: true,
       repeat: -1,
+      ease: "none",
     });
 
     return () => {
@@ -181,12 +182,21 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               // @ts-expect-error
               "--shadow-color1": adjustedColor + "60",
               "--shadow-color2": shiftHue(adjustedColor, 25) + "60",
-              "--shadow-color3": shiftHue(adjustedColor, 55) + "60",
+              "--shadow-color3": shiftHue(adjustedColor, 75) + "60",
             }}
           >
-            {/* <Glow fill="var(--shadow-color1)" index={0} />
-            <Glow fill="var(--shadow-color2)" index={1} />
-            <Glow fill="var(--shadow-color2)" index={2} /> */}
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color1)]"
+            />
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color2)]"
+            />
+            <div
+              role="presentation"
+              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
+            />
 
             {videoSrc ? (
               <video
@@ -215,48 +225,5 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-type GlowProps = {
-  fill: string;
-  index: number;
-};
-
-const Glow: FC<GlowProps> = ({ fill, index }) => {
-  const id = `turb-${index}`;
-
-  const randomBaseFrequency = useMemo(
-    () => gsap.utils.random(0.03, 0.05, 0.0015),
-    []
-  );
-
-  return (
-    <svg
-      className="glow absolute inset-0 blur-[20px] -z-[1] "
-      width="100%"
-      height="100%"
-    >
-      <defs>
-        <filter id={id}>
-          <feTurbulence
-            className="turbwave"
-            type="fractalNoise"
-            baseFrequency={randomBaseFrequency}
-            numOctaves="2"
-            result="turbulence_3"
-            data-filterId="3"
-          />
-          <feDisplacementMap
-            xChannelSelector="R"
-            yChannelSelector="G"
-            in="SourceGraphic"
-            in2="turbulence_3"
-            scale="500"
-          />
-        </filter>
-      </defs>
-      <rect width="100%" height="100%" fill={fill} filter={`url(#${id})`} />
-    </svg>
   );
 };
