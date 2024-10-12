@@ -17,7 +17,7 @@ export type ProjectData = {
 export const PROJECTS: ProjectData[] = [
   {
     themeColor: "#D70321",
-    videoSrc: "/videos/sample-video.mp4",
+    videoSrc: "/videos/sample-video-compressed.mp4",
     title: "Searching Mapbox",
     technologies: "React, TypeScript, SASS, Mapbox GL",
     description:
