@@ -60,16 +60,16 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               onUpdate: (scrollTrigger) => {
                 setIsActive(scrollTrigger.isActive);
 
-                // const video = videoRef.current;
-                // if (!video) return;
+                const video = videoRef.current;
+                if (!video) return;
 
-                // const progress = scrollTrigger.progress;
+                const progress = scrollTrigger.progress;
 
-                // if (progress >= 0.35 && progress <= 0.65) {
-                //   video.play();
-                // } else {
-                //   video.pause();
-                // }
+                if (progress >= 0.35 && progress <= 0.65) {
+                  video.play();
+                } else {
+                  video.pause();
+                }
               },
             },
           })
@@ -184,9 +184,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               "--shadow-color3": shiftHue(adjustedColor, 55) + "60",
             }}
           >
-            <Glow fill="var(--shadow-color1)" index={0} />
+            {/* <Glow fill="var(--shadow-color1)" index={0} />
             <Glow fill="var(--shadow-color2)" index={1} />
-            <Glow fill="var(--shadow-color2)" index={2} />
+            <Glow fill="var(--shadow-color2)" index={2} /> */}
 
             {videoSrc ? (
               <video
