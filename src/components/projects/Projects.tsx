@@ -139,13 +139,6 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       },
     });
 
-    gsap.to(".turbwave", {
-      attr: { baseFrequency: 0.035 },
-      repeat: -1,
-      yoyo: true,
-      duration: 12,
-    });
-
     gsap.to(selector(".glow"), {
       x: (i) => {
         if (i === 0) return randomPosX();
@@ -163,6 +156,16 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       duration: () => randomDuration(),
       yoyo: true,
       repeat: -1,
+    });
+
+    const randomBaseFrequency = gsap.utils.random(0.02, 0.05, 0.0025, true);
+
+    gsap.set(selector(".turbwave"), {
+      attr: {
+        baseFrequency: (i) => {
+          return randomBaseFrequency();
+        },
+      },
     });
   }, [isActive]);
 
@@ -185,9 +188,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               "--shadow-color3": shiftHue(adjustedColor, 75) + "50",
             }}
           >
-            <Glow fill="var(--shadow-color1)" />
-            <Glow fill="var(--shadow-color2)" />
-            <Glow fill="var(--shadow-color2)" />
+            <Glow fill="var(--shadow-color1)" index={0} />
+            <Glow fill="var(--shadow-color2)" index={1} />
+            <Glow fill="var(--shadow-color2)" index={2} />
 
             {videoSrc ? (
               <video
@@ -221,17 +224,19 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
 
 type GlowProps = {
   fill: string;
+  index: number;
 };
 
-const Glow: FC<GlowProps> = ({ fill }) => {
+const Glow: FC<GlowProps> = ({ fill, index }) => {
+  const id = `turb-${index}`;
   return (
     <svg
-      className="glow absolute inset-0  blur-xl -z-[1] "
+      className="glow absolute inset-0 blur-[20px] -z-[1]"
       width="100%"
       height="100%"
     >
       <defs>
-        <filter id="turb">
+        <filter id={id}>
           <feTurbulence
             className="turbwave"
             type="fractalNoise"
@@ -245,11 +250,11 @@ const Glow: FC<GlowProps> = ({ fill }) => {
             yChannelSelector="G"
             in="SourceGraphic"
             in2="turbulence_3"
-            scale="380"
+            scale="500"
           />
         </filter>
       </defs>
-      <rect width="100%" height="100%" fill={fill} filter="url(#turb)" />
+      <rect width="100%" height="100%" fill={fill} filter={`url(#${id})`} />
     </svg>
   );
 };
