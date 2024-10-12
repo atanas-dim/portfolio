@@ -15,7 +15,7 @@ const Intro: FC = () => {
     const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
 
     const createTimeline = () => {
-      timeline?.scrollTrigger?.kill();
+      timeline?.kill();
 
       timeline = gsap
         .timeline({

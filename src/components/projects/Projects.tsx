@@ -43,7 +43,10 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       let timeline: gsap.core.Timeline | undefined = undefined;
 
       const createTimeline = () => {
-        timeline?.scrollTrigger?.kill();
+        timeline?.kill();
+        gsap.set(contentRef.current, {
+          x: 100 + "%",
+        });
 
         timeline = gsap
           .timeline({
@@ -55,6 +58,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               fastScrollEnd: true,
               invalidateOnRefresh: true,
               onUpdate: (scrollTrigger) => {
+                console.log("on update", title);
                 setIsActive(scrollTrigger.isActive);
 
                 const video = videoRef.current;

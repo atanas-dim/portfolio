@@ -17,7 +17,7 @@ const Tools: FC<Props> = () => {
     let timeline: gsap.core.Timeline | undefined = undefined;
 
     const createTimeline = () => {
-      timeline?.scrollTrigger?.kill();
+      timeline?.kill();
 
       gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
       gsap.set("#tools-wrapper", { y: 40 });
@@ -111,16 +111,12 @@ const Tools: FC<Props> = () => {
   }, []);
 
   return (
-    <section
-      ref={containerRef}
-      id="tools"
-      className="w-full h-[200svh] !top-0 !transform-none"
-    >
+    <section ref={containerRef} id="tools" className="w-full h-[200svh]">
       <div
         id="tools-wrapper"
         className={twMerge(
-          "w-full h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
-          isActive && "fixed top-0 left-0"
+          "w-full max-w-4xl left-1/2 -translate-x-1/2 h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
+          isActive && "fixed top-0"
         )}
       >
         <div className="flex flex-wrap gap-x-4 gap-y-3">
@@ -142,7 +138,7 @@ const Tools: FC<Props> = () => {
             return (
               <span
                 key={"tool-" + index}
-                className="tool text-3xl md:text-5xl brightness-0 opacity-0"
+                className="tool text-3xl lg:text-5xl brightness-0 opacity-0"
                 style={{ color: tool.color }}
               >
                 {tool.label}
