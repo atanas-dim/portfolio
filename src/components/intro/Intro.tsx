@@ -17,13 +17,9 @@ const Intro: FC = () => {
     const createTimeline = () => {
       timeline?.scrollTrigger?.kill();
 
-      const scroller = document.getElementsByTagName("main")?.[0];
-      if (!scroller) return;
-
       timeline = gsap
         .timeline({
           scrollTrigger: {
-            scroller,
             trigger: containerRef.current,
             start: "top top",
             end: "bottom center",
@@ -32,7 +28,7 @@ const Intro: FC = () => {
             fastScrollEnd: true,
             invalidateOnRefresh: true,
             onRefresh: () => {
-              scroller.scrollTo(0, window.scrollY + 1);
+              window.scrollTo(0, window.scrollY + 1);
             },
             onUpdate: (scrollTrigger) => {
               setIsActive(scrollTrigger.isActive || window.scrollY <= 0);
@@ -49,11 +45,18 @@ const Intro: FC = () => {
     createTimeline();
 
     window.addEventListener("orientationchange", createTimeline);
-    window.addEventListener("resize", createTimeline);
+
+    const onResize = () => {
+      const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
+      if (isIos) return;
+      createTimeline();
+    };
+
+    window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("orientationchange", createTimeline);
-      window.removeEventListener("resize", createTimeline);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -62,7 +65,7 @@ const Intro: FC = () => {
       <div
         id="intro-content"
         className={twMerge(
-          "w-full h-svh flex justify-center items-center flex-col p-8",
+          "w-full h-svh flex justify-center items-center flex-col p-8 pointer-events-none",
           isActive && "fixed top-0 left-0"
         )}
       >
@@ -72,7 +75,7 @@ const Intro: FC = () => {
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 md:mb-4">
           react developer
         </h2>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2 *:pointer-events-auto">
           {SOCIAL_LINKS.map((link, index) => {
             return (
               <a

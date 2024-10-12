@@ -45,13 +45,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       const createTimeline = () => {
         timeline?.scrollTrigger?.kill();
 
-        const scroller = document.getElementsByTagName("main")?.[0];
-        if (!scroller) return;
-
         timeline = gsap
           .timeline({
             scrollTrigger: {
-              scroller,
               trigger: containerRef.current,
               start: "top bottom",
               scrub: true,
@@ -83,11 +79,18 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       createTimeline();
 
       window.addEventListener("orientationchange", createTimeline);
-      window.addEventListener("resize", createTimeline);
+
+      const onResize = () => {
+        const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
+        if (isIos) return;
+        createTimeline();
+      };
+
+      window.addEventListener("resize", onResize);
 
       return () => {
         window.removeEventListener("orientationchange", createTimeline);
-        window.removeEventListener("resize", createTimeline);
+        window.removeEventListener("resize", onResize);
       };
     },
     { scope: containerRef }
@@ -136,6 +139,13 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       },
     });
 
+    gsap.to(".turbwave", {
+      attr: { baseFrequency: 0.035 },
+      repeat: -1,
+      yoyo: true,
+      duration: 12,
+    });
+
     gsap.to(selector(".glow"), {
       x: (i) => {
         if (i === 0) return randomPosX();
@@ -149,7 +159,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         if (i === 2) return randomPosY();
         return 0;
       },
-      scale: 0.95,
+
       duration: () => randomDuration(),
       yoyo: true,
       repeat: -1,
@@ -175,18 +185,10 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
               "--shadow-color3": shiftHue(adjustedColor, 75) + "50",
             }}
           >
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
-            />
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
-            />
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
-            />
+            <Glow fill="var(--shadow-color1)" />
+            <Glow fill="var(--shadow-color2)" />
+            <Glow fill="var(--shadow-color2)" />
+
             {videoSrc ? (
               <video
                 ref={videoRef}
@@ -214,5 +216,40 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+type GlowProps = {
+  fill: string;
+};
+
+const Glow: FC<GlowProps> = ({ fill }) => {
+  return (
+    <svg
+      className="glow absolute inset-0  blur-xl -z-[1] "
+      width="100%"
+      height="100%"
+    >
+      <defs>
+        <filter id="turb">
+          <feTurbulence
+            className="turbwave"
+            type="fractalNoise"
+            baseFrequency="0.017"
+            numOctaves="2"
+            result="turbulence_3"
+            data-filterId="3"
+          />
+          <feDisplacementMap
+            xChannelSelector="R"
+            yChannelSelector="G"
+            in="SourceGraphic"
+            in2="turbulence_3"
+            scale="380"
+          />
+        </filter>
+      </defs>
+      <rect width="100%" height="100%" fill={fill} filter="url(#turb)" />
+    </svg>
   );
 };

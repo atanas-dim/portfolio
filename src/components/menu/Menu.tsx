@@ -212,7 +212,7 @@ const Menu: FC = () => {
 
                         const offsetTop = el?.offsetTop || 0;
 
-                        document.getElementsByTagName("main")?.[0].scrollTo({
+                        window.scrollTo({
                           left: 0,
                           top: offsetTop,
                           behavior: "smooth",

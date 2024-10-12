@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const HomePage: FC = () => {
   return (
-    <main className="w-full overflow-x-hidden overflow-y-auto h-screen">
+    <main className="relative w-full ">
       <Intro />
       <Projects />
       <Tools />

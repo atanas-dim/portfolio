@@ -20,14 +20,9 @@
 
 html,
 body {
-  @apply w-full h-screen scroll-smooth !overflow-hidden;
+  @apply w-full h-screen scroll-smooth;
 }
 
 body {
   @apply bg-white text-black font-system;
-}
-
-main {
-  -webkit-overflow-scrolling: touch;
-  @apply scroll-smooth;
 }

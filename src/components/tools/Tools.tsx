@@ -22,13 +22,9 @@ const Tools: FC<Props> = () => {
       gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
       gsap.set("#tools-wrapper", { y: 40 });
 
-      const scroller = document.getElementsByTagName("main")?.[0];
-      if (!scroller) return;
-
       timeline = gsap
         .timeline({
           scrollTrigger: {
-            scroller,
             trigger: containerRef.current,
             start: "top bottom",
             end: "bottom center",
@@ -94,18 +90,23 @@ const Tools: FC<Props> = () => {
           },
           "exit"
         );
-
-      console.log("CREATE");
     };
 
     createTimeline();
 
     window.addEventListener("orientationchange", createTimeline);
-    window.addEventListener("resize", createTimeline);
+
+    const onResize = () => {
+      const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
+      if (isIos) return;
+      createTimeline();
+    };
+
+    window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("orientationchange", createTimeline);
-      window.removeEventListener("resize", createTimeline);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
