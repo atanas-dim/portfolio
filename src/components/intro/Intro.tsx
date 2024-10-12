@@ -14,12 +14,16 @@ const Intro: FC = () => {
 
     const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
 
-    const onOrientationChange = () => {
+    const createTimeline = () => {
       timeline?.scrollTrigger?.kill();
+
+      const scroller = document.getElementsByTagName("main")?.[0];
+      if (!scroller) return;
 
       timeline = gsap
         .timeline({
           scrollTrigger: {
+            scroller,
             trigger: containerRef.current,
             start: "top top",
             end: "bottom center",
@@ -28,7 +32,7 @@ const Intro: FC = () => {
             fastScrollEnd: true,
             invalidateOnRefresh: true,
             onRefresh: () => {
-              window.scrollTo(0, window.scrollY + 1);
+              scroller.scrollTo(0, window.scrollY + 1);
             },
             onUpdate: (scrollTrigger) => {
               setIsActive(scrollTrigger.isActive || window.scrollY <= 0);
@@ -42,12 +46,14 @@ const Intro: FC = () => {
         });
     };
 
-    onOrientationChange();
+    createTimeline();
 
-    window.addEventListener("orientationchange", onOrientationChange);
+    window.addEventListener("orientationchange", createTimeline);
+    window.addEventListener("resize", createTimeline);
 
     return () => {
-      window.removeEventListener("orientationchange", onOrientationChange);
+      window.removeEventListener("orientationchange", createTimeline);
+      window.removeEventListener("resize", createTimeline);
     };
   }, []);
 

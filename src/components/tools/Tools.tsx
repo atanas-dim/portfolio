@@ -16,15 +16,19 @@ const Tools: FC<Props> = () => {
   useGSAP(() => {
     let timeline: gsap.core.Timeline | undefined = undefined;
 
-    const onOrientationChange = () => {
+    const createTimeline = () => {
       timeline?.scrollTrigger?.kill();
 
       gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
       gsap.set("#tools-wrapper", { y: 40 });
 
+      const scroller = document.getElementsByTagName("main")?.[0];
+      if (!scroller) return;
+
       timeline = gsap
         .timeline({
           scrollTrigger: {
+            scroller,
             trigger: containerRef.current,
             start: "top bottom",
             end: "bottom center",
@@ -90,14 +94,18 @@ const Tools: FC<Props> = () => {
           },
           "exit"
         );
+
+      console.log("CREATE");
     };
 
-    onOrientationChange();
+    createTimeline();
 
-    window.addEventListener("orientationchange", onOrientationChange);
+    window.addEventListener("orientationchange", createTimeline);
+    window.addEventListener("resize", createTimeline);
 
     return () => {
-      window.removeEventListener("orientationchange", onOrientationChange);
+      window.removeEventListener("orientationchange", createTimeline);
+      window.removeEventListener("resize", createTimeline);
     };
   }, []);
 

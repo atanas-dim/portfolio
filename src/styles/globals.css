@@ -2,15 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* --phone-height-landscape: min(760px, 80vmin);
+  --phone-height-portrait: min(760px, 70vmax); */
+  --phone-height: min(760px, 80vmin);
+}
+
+@media (orientation: portrait) {
+  :root {
+    --phone-height: min(760px, 70vmax);
+  }
+}
+
 * {
   overscroll-behavior: none;
 }
 
 html,
 body {
-  @apply w-full h-svh scroll-smooth;
+  @apply w-full h-screen scroll-smooth !overflow-hidden;
 }
 
 body {
   @apply bg-white text-black font-system;
+}
+
+main {
+  -webkit-overflow-scrolling: touch;
+  @apply scroll-smooth;
 }

@@ -208,9 +208,14 @@ const Menu: FC = () => {
                       gsap.delayedCall(0.6, () => {
                         window.location.hash = item.hash;
 
-                        element.scrollIntoView({
-                          behavior: "instant",
-                          block: "start",
+                        const el = document.getElementById(item.hash);
+
+                        const offsetTop = el?.offsetTop || 0;
+
+                        document.getElementsByTagName("main")?.[0].scrollTo({
+                          left: 0,
+                          top: offsetTop,
+                          behavior: "smooth",
                         });
                       });
                     }
