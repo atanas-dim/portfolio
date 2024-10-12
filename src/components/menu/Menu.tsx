@@ -7,6 +7,7 @@ import { GiHamburger } from "react-icons/gi";
 import { Transition } from "react-transition-group";
 
 import useMenuStore from "@/hooks/useMenuStore";
+import { hslToHex } from "@/utils/colors";
 
 export const MENU_ITEMS = [
   { hash: "intro", label: "Atanas" },
@@ -59,7 +60,7 @@ const Menu: FC = () => {
         ? containerRect.width
         : containerRect.height;
 
-    gsap.set(".modal", { y: 0 });
+    gsap.set("#menu-modal", { y: 0 });
 
     gsap.set(".menu-item", {
       yPercent: (i) => -100 * i - shortSide,
@@ -67,11 +68,13 @@ const Menu: FC = () => {
       opacity: 1,
     });
 
-    const randomColor = `hsl(${Math.random() * 360}, 85%, 85%)`;
+    const randomHue = Math.random() * 360;
+    const hexColor = hslToHex(randomHue, 85, 85);
 
     gsap.set(".menu-item-bg", {
-      backgroundColor: (i) => (i === 0 ? "#ffffff" : randomColor),
+      backgroundColor: (i) => (i === 0 ? "#ffffff" : hexColor),
     });
+    gsap.set("#menu-backdrop", { backgroundColor: hexColor + "bd" });
   };
 
   const onEntering = () => {
@@ -86,7 +89,7 @@ const Menu: FC = () => {
         ease: "back.out",
       })
       .to(
-        ".menu-backdrop",
+        "#menu-backdrop",
         {
           opacity: 1,
         },
@@ -107,7 +110,7 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
-      .to(".menu-backdrop", { duration: 0.6, opacity: 0 })
+      .to("#menu-backdrop", { duration: 0.6, opacity: 0 })
       .to(
         ".menu-item",
         {
@@ -119,7 +122,7 @@ const Menu: FC = () => {
         },
         0
       )
-      .set(".modal", { y: "-100%" });
+      .set("#menu-modal", { y: "-100%" });
   };
 
   const toggleMenu = () => {
@@ -181,11 +184,16 @@ const Menu: FC = () => {
       >
         <div
           ref={container}
+          id="menu-modal"
           className="z-40 modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="menu-backdrop w-full h-full absolute top-0 left-0 bg-white/50 backdrop-blur-sm bg-32 opacity-0"
+            id="menu-backdrop"
+            className=" w-full h-full absolute top-0 left-0 bg-white/50 backdrop-blur-sm bg-32 opacity-0"
             onClick={toggleMenu}
+            style={{
+              filter: `hue-rotate(${MENU_ITEMS.length * 25}deg)`,
+            }}
           />
 
           <div

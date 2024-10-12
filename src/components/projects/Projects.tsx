@@ -116,7 +116,6 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
 
   useEffect(() => {
     if (!isActive) return;
-
     const selector = gsap.utils.selector(containerRef);
     const randomNegX = gsap.utils.random(-40, -16, 2, true);
     const randomPosX = gsap.utils.random(16, 40, 2, true);
@@ -158,15 +157,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       repeat: -1,
     });
 
-    const randomBaseFrequency = gsap.utils.random(0.02, 0.05, 0.0025, true);
-
-    gsap.set(selector(".turbwave"), {
-      attr: {
-        baseFrequency: (i) => {
-          return randomBaseFrequency();
-        },
-      },
-    });
+    return () => {
+      gsap.killTweensOf(selector(".glow"));
+    };
   }, [isActive]);
 
   return (
@@ -183,9 +176,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
             className={VIDEO_WRAPPER_CLASSES}
             style={{
               // @ts-expect-error
-              "--shadow-color1": adjustedColor + "50",
-              "--shadow-color2": shiftHue(adjustedColor, 25) + "50",
-              "--shadow-color3": shiftHue(adjustedColor, 75) + "50",
+              "--shadow-color1": adjustedColor + "60",
+              "--shadow-color2": shiftHue(adjustedColor, 25) + "60",
+              "--shadow-color3": shiftHue(adjustedColor, 55) + "60",
             }}
           >
             <Glow fill="var(--shadow-color1)" index={0} />
@@ -229,9 +222,15 @@ type GlowProps = {
 
 const Glow: FC<GlowProps> = ({ fill, index }) => {
   const id = `turb-${index}`;
+
+  const randomBaseFrequency = useMemo(
+    () => gsap.utils.random(0.03, 0.05, 0.0015),
+    []
+  );
+
   return (
     <svg
-      className="glow absolute inset-0 blur-[20px] -z-[1]"
+      className="glow absolute inset-0 blur-[20px] -z-[1] "
       width="100%"
       height="100%"
     >
@@ -240,7 +239,7 @@ const Glow: FC<GlowProps> = ({ fill, index }) => {
           <feTurbulence
             className="turbwave"
             type="fractalNoise"
-            baseFrequency="0.017"
+            baseFrequency={randomBaseFrequency}
             numOctaves="2"
             result="turbulence_3"
             data-filterId="3"
