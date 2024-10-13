@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
+import useScrollTrigger from "@/hooks/useScrollTrigger";
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
@@ -36,44 +37,19 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     () => adjustColorLightnessAndSaturation(themeColor, { lightness: 72 }),
     [themeColor]
   );
-  const [isActive, setIsActive] = useState(false);
+  const { contextSafe } = useGSAP();
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (!containerRef.current) return;
+  const onScrollTriggerProgress = contextSafe((progress: number) => {
+    const x =
+      Math.min(100, Math.max(-100, gsap.utils.interpolate(0, -100, progress))) +
+      "%";
 
-      const isActive =
-        containerRef.current?.offsetTop < window.scrollY &&
-        window.scrollY <
-          containerRef.current.offsetTop + containerRef.current.offsetHeight;
+    gsap.set(contentRef.current, {
+      x,
+    });
+  });
 
-      setIsActive(isActive);
-
-      const progress =
-        (window.scrollY - containerRef.current.offsetTop) /
-        containerRef.current.offsetHeight;
-
-      const x =
-        Math.min(
-          100,
-          Math.max(-100, gsap.utils.interpolate(0, -100, progress))
-        ) + "%";
-
-      if (title === "Searching Mapbox") console.log(progress, title, x);
-
-      gsap.set(contentRef.current, {
-        x,
-      });
-    };
-
-    onScroll();
-
-    window.addEventListener("scroll", onScroll);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
+  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -94,7 +70,6 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   }, []);
 
   useGSAP(() => {
-    if (isActive) console.log("isActive", isActive, title);
     const selector = gsap.utils.selector(containerRef);
     const randomNegX = gsap.utils.random(-40, -16, 2, true);
     const randomPosX = gsap.utils.random(16, 40, 2, true);

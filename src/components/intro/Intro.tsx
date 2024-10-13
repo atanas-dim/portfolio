@@ -1,25 +1,25 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useRef, useState } from "react";
+import { type FC, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
+import useScrollTrigger from "@/hooks/useScrollTrigger";
 import { SOCIAL_LINKS } from "@/resources/socialLinks";
 
 const Intro: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isActive, setIsActive] = useState(false);
+  const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
 
   useGSAP(() => {
-    let timeline: gsap.core.Timeline | undefined = undefined;
-
     const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
 
     const createTimeline = () => {
-      timeline?.kill();
+      timelineRef.current?.kill();
       gsap.set(els, { opacity: 1, y: 0 });
 
-      timeline = gsap
+      timelineRef.current = gsap
         .timeline({
+          paused: true,
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top",
@@ -31,9 +31,6 @@ const Intro: FC = () => {
             onRefresh: () => {
               window.scrollTo(0, window.scrollY + 1);
             },
-            onUpdate: (scrollTrigger) => {
-              setIsActive(scrollTrigger.isActive || window.scrollY <= 0);
-            },
           },
         })
         .to(els, {
@@ -44,22 +41,17 @@ const Intro: FC = () => {
     };
 
     createTimeline();
-
-    window.addEventListener("orientationchange", createTimeline);
-
-    const onResize = () => {
-      const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
-      if (isIos) return;
-      createTimeline();
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("orientationchange", createTimeline);
-      window.removeEventListener("resize", onResize);
-    };
   }, []);
+
+  const { contextSafe } = useGSAP();
+
+  const onScrollTriggerProgress = contextSafe((progress: number) => {
+    if (progress < 0 || progress > 1) return;
+    timelineRef.current?.progress(progress);
+  });
+
+  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  console.log({ isActive });
 
   return (
     <section id="intro" ref={containerRef} className="w-full h-svh">
