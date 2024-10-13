@@ -5,37 +5,23 @@ import gsap from "gsap";
 import React, { type FC, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
+import useScrollTrigger from "@/hooks/useScrollTrigger";
 import { ADDITIONAL_TOOLS, BASE_TOOLS, MAIN_TOOLS } from "@/resources/tools";
 
 type Props = {};
 
 const Tools: FC<Props> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isActive, setIsActive] = useState(false);
+  const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
 
   useGSAP(() => {
-    let timeline: gsap.core.Timeline | undefined = undefined;
-
     const createTimeline = () => {
-      timeline?.kill();
-
       gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
-      gsap.set("#tools-wrapper", { y: 40 });
+      gsap.set("#tools", { y: 40 });
 
-      timeline = gsap
+      timelineRef.current = gsap
         .timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom center",
-            scrub: 1,
-            preventOverlaps: true,
-            fastScrollEnd: true,
-            invalidateOnRefresh: true,
-            onUpdate: (scrollTrigger) => {
-              setIsActive(scrollTrigger.isActive);
-            },
-          },
+          paused: true,
         })
         .addLabel("entry")
         .to(
@@ -48,7 +34,7 @@ const Tools: FC<Props> = () => {
           "entry"
         )
         .to(
-          "#tools-wrapper",
+          "#tools",
           {
             y: 0,
             duration: 2,
@@ -74,7 +60,7 @@ const Tools: FC<Props> = () => {
         )
         .addLabel("exit")
         .to(
-          "#tools-wrapper",
+          "#tools",
           {
             y: -40,
             duration: 2,
@@ -93,30 +79,26 @@ const Tools: FC<Props> = () => {
     };
 
     createTimeline();
-
-    window.addEventListener("orientationchange", createTimeline);
-
-    const onResize = () => {
-      const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
-      if (isIos) return;
-      createTimeline();
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      window.removeEventListener("orientationchange", createTimeline);
-      window.removeEventListener("resize", onResize);
-    };
   }, []);
 
+  const { contextSafe } = useGSAP();
+
+  const onScrollTriggerProgress = contextSafe((progress: number) => {
+    timelineRef.current?.progress(Math.min(1, Math.max(0, progress)));
+  });
+
+  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+
   return (
-    <section ref={containerRef} id="tools" className="w-full h-[200svh]">
+    <section
+      ref={containerRef}
+      className="w-full h-[150svh] -mt-[100svh] mb-[50svh]"
+    >
       <div
-        id="tools-wrapper"
+        id="tools"
         className={twMerge(
-          "w-full max-w-4xl left-1/2 -translate-x-1/2 h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
-          isActive && "fixed top-0"
+          "-scroll-m-[50svh] w-full max-w-4xl  h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
+          isActive && "fixed top-0 left-1/2 !-translate-x-1/2"
         )}
       >
         <div className="flex flex-wrap gap-x-4 gap-y-3">

@@ -7,7 +7,7 @@ const useScrollTrigger = (
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
+    const calculateProgress = () => {
       if (!triggerRef.current) return;
       const isActive =
         triggerRef.current?.offsetTop <= window.scrollY &&
@@ -23,12 +23,14 @@ const useScrollTrigger = (
       onProgress?.(progress);
     };
 
-    onScroll();
+    calculateProgress();
 
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", calculateProgress);
+    window.addEventListener("orientationchange", calculateProgress);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", calculateProgress);
+      window.removeEventListener("orientationchange", calculateProgress);
     };
   }, [onProgress, triggerRef]);
 

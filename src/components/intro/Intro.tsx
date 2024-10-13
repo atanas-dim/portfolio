@@ -14,30 +14,22 @@ const Intro: FC = () => {
     const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
 
     const createTimeline = () => {
-      timelineRef.current?.kill();
       gsap.set(els, { opacity: 1, y: 0 });
 
       timelineRef.current = gsap
         .timeline({
           paused: true,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom center",
-            scrub: 2,
-            preventOverlaps: true,
-            fastScrollEnd: true,
-            invalidateOnRefresh: true,
-            onRefresh: () => {
-              window.scrollTo(0, window.scrollY + 1);
-            },
-          },
+          duration: 1,
         })
-        .to(els, {
-          opacity: 0,
-          y: -16,
-          stagger: 0.2,
-        });
+        .to(
+          els,
+          {
+            opacity: 0,
+            y: -16,
+            stagger: 0.2,
+          },
+          0.5
+        );
     };
 
     createTimeline();
@@ -51,7 +43,6 @@ const Intro: FC = () => {
   });
 
   const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
-  console.log({ isActive });
 
   return (
     <section id="intro" ref={containerRef} className="w-full h-svh">
