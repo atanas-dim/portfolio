@@ -11,17 +11,21 @@ export type ProjectData = {
   technologies: string;
   description?: string;
   links: { href: string; label: string }[];
-  image: { src: StaticImageData; alt: string; isMobile?: boolean };
+  image?: { src: StaticImageData; alt: string; isMobile?: boolean };
 };
 
+function generateCloudinaryUrl(fileName: string, width: number) {
+  return `https://res.cloudinary.com/atanasdim/video/upload/w_${width}/portfolio/${fileName}`;
+}
 export const PROJECTS: ProjectData[] = [
   {
-    themeColor: "#D70321",
-    videoSrc: "/videos/sample-video-compressed.mp4",
-    title: "Searching Mapbox",
-    technologies: "React, TypeScript, SASS, Mapbox GL",
-    description:
-      "Using Mapbox GL API to search for nearby places. Custom features include search bar, theme toggler, collapsible list of nearby places.",
+    themeColor: "#f1dec2",
+    videoSrc: generateCloudinaryUrl(
+      "tiled-image-loader-compressed_ba1if1.mp4",
+      400
+    ),
+    title: "Tiled Image Loader",
+    technologies: "NextJs, TypeScript, TailwindCSS",
     links: [
       {
         label: "Code",
@@ -32,11 +36,6 @@ export const PROJECTS: ProjectData[] = [
         href: "https://searching-mapbox.netlify.app/",
       },
     ],
-    image: {
-      src: mapImg,
-      alt: "",
-      isMobile: true,
-    },
   },
 
   {

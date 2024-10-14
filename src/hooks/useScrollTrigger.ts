@@ -4,20 +4,23 @@ const useScrollTrigger = (
   triggerRef: MutableRefObject<HTMLElement | null>,
   onProgress?: (progress: number) => void
 ) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const calculateProgress = () => {
       if (!triggerRef.current) return;
-      const isActive =
-        triggerRef.current?.offsetTop <= window.scrollY &&
+
+      const isVisible =
+        window.scrollY + window.innerHeight >= triggerRef.current.offsetTop &&
         window.scrollY <
           triggerRef.current.offsetTop + triggerRef.current.offsetHeight;
 
-      setIsActive(isActive);
+      setIsVisible(isVisible);
 
       const progress =
-        (window.scrollY - triggerRef.current.offsetTop) /
+        (window.scrollY +
+          window.innerHeight / 2 -
+          triggerRef.current.offsetTop) /
         triggerRef.current.offsetHeight;
 
       onProgress?.(progress);
@@ -34,7 +37,7 @@ const useScrollTrigger = (
     };
   }, [onProgress, triggerRef]);
 
-  return isActive;
+  return isVisible;
 };
 
 export default useScrollTrigger;

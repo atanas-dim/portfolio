@@ -1,5 +1,5 @@
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import gsap, { interpolate } from "gsap";
 import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
@@ -14,8 +14,7 @@ const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    // PY needed to make the colours show in full when each projects is exactly in the middle of the screen
-    <section ref={containerRef} className="w-full flex flex-col py-[50vh]">
+    <section ref={containerRef} className="w-full flex flex-col pb-[50vh]">
       <div id="projects" className="w-full flex flex-col">
         {PROJECTS.map((project, index) => {
           return <Project key={`project-container-${index}`} {...project} />;
@@ -40,16 +39,28 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
   const { contextSafe } = useGSAP();
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
+    const shouldPlay = progress >= 0.35 && progress <= 0.65;
+
+    if (videoRef.current) {
+      if (shouldPlay) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+
     const x =
-      Math.min(100, Math.max(-100, gsap.utils.interpolate(0, -100, progress))) +
-      "%";
+      Math.min(
+        100,
+        Math.max(-100, gsap.utils.interpolate(100, -100, progress))
+      ) + "%";
 
     gsap.set(contentRef.current, {
       x,
     });
   });
 
-  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -116,7 +127,7 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
     return () => {
       gsap.killTweensOf(selector(".glow"));
     };
-  }, [isActive]);
+  }, [isVisible]);
 
   return (
     <div ref={containerRef} className="w-full h-screen shrink-0">
@@ -130,17 +141,17 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
             style={{
               // @ts-expect-error
               "--shadow-color1": adjustedColor + "60",
-              "--shadow-color2": shiftHue(adjustedColor, 25) + "60",
-              "--shadow-color3": shiftHue(adjustedColor, 75) + "60",
+              "--shadow-color2": shiftHue(adjustedColor, -25) + "60",
+              "--shadow-color3": shiftHue(adjustedColor, -55) + "60",
             }}
           >
             <div
               role="presentation"
-              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color1)]"
+              className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
             />
             <div
               role="presentation"
-              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color2)]"
+              className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
             />
             <div
               role="presentation"

@@ -19,17 +19,12 @@ const Intro: FC = () => {
       timelineRef.current = gsap
         .timeline({
           paused: true,
-          duration: 1,
         })
-        .to(
-          els,
-          {
-            opacity: 0,
-            y: -16,
-            stagger: 0.2,
-          },
-          0.5
-        );
+        .to(els, {
+          opacity: 0,
+          y: -16,
+          stagger: 0.2,
+        });
     };
 
     createTimeline();
@@ -38,11 +33,11 @@ const Intro: FC = () => {
   const { contextSafe } = useGSAP();
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
-    if (progress < 0 || progress > 1) return;
-    timelineRef.current?.progress(progress);
+    const interpolated = gsap.utils.interpolate(-2, 1, progress);
+    timelineRef.current?.progress(interpolated);
   });
 
-  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   return (
     <section id="intro" ref={containerRef} className="w-full h-svh">
@@ -50,7 +45,7 @@ const Intro: FC = () => {
         id="intro-content"
         className={twMerge(
           "w-full h-svh flex justify-center items-center flex-col p-8 pointer-events-none",
-          isActive && "fixed top-0 left-0"
+          isVisible && "fixed top-0 left-0"
         )}
       >
         <h1 className="text-4xl md:text-5xl font-extrabold md:mb-2">

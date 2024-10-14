@@ -87,18 +87,15 @@ const Tools: FC<Props> = () => {
     timelineRef.current?.progress(Math.min(1, Math.max(0, progress)));
   });
 
-  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   return (
-    <section
-      ref={containerRef}
-      className="w-full h-[150svh] -mt-[100svh] mb-[50svh]"
-    >
+    <section ref={containerRef} className="w-full h-[150svh] -mt-[50svh] ">
       <div
         id="tools"
         className={twMerge(
           "-scroll-m-[50svh] w-full max-w-4xl  h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
-          isActive && "fixed top-0 left-1/2 !-translate-x-1/2"
+          isVisible && "fixed top-0 left-1/2 !-translate-x-1/2"
         )}
       >
         <div className="flex flex-wrap gap-x-4 gap-y-3">
