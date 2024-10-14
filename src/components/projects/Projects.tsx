@@ -1,5 +1,5 @@
 import { useGSAP } from "@gsap/react";
-import gsap, { interpolate } from "gsap";
+import gsap from "gsap";
 import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
@@ -49,11 +49,9 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
       }
     }
 
-    const x =
-      Math.min(
-        100,
-        Math.max(-100, gsap.utils.interpolate(100, -100, progress))
-      ) + "%";
+    const interpolatedProgress = gsap.utils.interpolate(50, -50, progress);
+
+    const x = Math.min(100, Math.max(-100, interpolatedProgress)) + "%";
 
     gsap.set(contentRef.current, {
       x,
