@@ -90,7 +90,10 @@ const Tools: FC<Props> = () => {
   const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   return (
-    <section ref={containerRef} className="w-full h-[150svh] -mt-[50svh] ">
+    <section
+      ref={containerRef}
+      className="w-full h-[150svh] -mt-[50svh] pointer-events-none"
+    >
       <div
         id="tools"
         className={twMerge(
