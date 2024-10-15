@@ -1,5 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import Image from "next/image";
 import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
@@ -7,7 +8,7 @@ import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = `bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
+const VIDEO_WRAPPER_CLASSES = `sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
 
 const Projects: FC = () => {
@@ -28,7 +29,13 @@ export default Projects;
 
 type ProjectProps = ProjectData;
 
-const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
+const Project: FC<ProjectProps> = ({
+  title,
+  themeColor,
+  videoSrc,
+  technologies,
+  links,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -133,52 +140,75 @@ const Project: FC<ProjectProps> = ({ title, themeColor, videoSrc }) => {
         ref={contentRef}
         className="w-full h-svh fixed inset-0 z-10 translate-x-[100%]"
       >
-        <div className="w-full h-svh flex items-center justify-center">
-          <div
-            className={VIDEO_WRAPPER_CLASSES}
-            style={{
-              // @ts-expect-error
-              "--shadow-color1": adjustedColor + "60",
-              "--shadow-color2": shiftHue(adjustedColor, -25) + "60",
-              "--shadow-color3": shiftHue(adjustedColor, -55) + "60",
-            }}
-          >
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
-            />
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
-            />
-            <div
-              role="presentation"
-              className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
-            />
-
-            {videoSrc ? (
-              <video
-                ref={videoRef}
-                src={videoSrc}
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className={VIDEO_PLAYER_CLASSES}
-              ></video>
-            ) : (
-              <div
-                className={VIDEO_PLAYER_CLASSES}
-                style={{
-                  backgroundColor: themeColor,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
+        <div className="w-full h-svh flex items-center justify-center sm:gap-6 flex-col-reverse sm:flex-row">
+          <div className="p-4 pb-10 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
+            <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 text-center">
+              <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold">
                 {title}
+              </h2>
+              <p className="">{technologies}</p>
+              <div className="flex gap-4">
+                {links.map((link, index) => {
+                  return (
+                    <a
+                      key={title.split(" ").join("-") + "-link-" + index}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </div>
-            )}
+            </div>
+          </div>
+          <div className="p-4 pt-12 sm:pt-4 w-full sm:w-1/2 h-full flex justify-center items-center">
+            <div
+              className={VIDEO_WRAPPER_CLASSES}
+              style={{
+                // @ts-expect-error
+                "--shadow-color1": adjustedColor + "60",
+                "--shadow-color2": shiftHue(adjustedColor, -25) + "60",
+                "--shadow-color3": shiftHue(adjustedColor, -55) + "60",
+              }}
+            >
+              <div
+                role="presentation"
+                className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
+              />
+              <div
+                role="presentation"
+                className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
+              />
+              <div
+                role="presentation"
+                className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
+              />
+
+              {videoSrc ? (
+                <video
+                  ref={videoRef}
+                  src={videoSrc}
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className={VIDEO_PLAYER_CLASSES}
+                ></video>
+              ) : (
+                <div
+                  className={VIDEO_PLAYER_CLASSES}
+                  style={{
+                    backgroundColor: themeColor,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+              )}
+            </div>
           </div>
         </div>
       </div>

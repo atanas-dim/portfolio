@@ -11,7 +11,6 @@ export type ProjectData = {
   technologies: string;
   description?: string;
   links: { href: string; label: string }[];
-  image?: { src: StaticImageData; alt: string; isMobile?: boolean };
 };
 
 function generateCloudinaryUrl(fileName: string, width: number) {
@@ -25,15 +24,15 @@ export const PROJECTS: ProjectData[] = [
       400
     ),
     title: "Tiled Image Loader",
-    technologies: "NextJs, TypeScript, TailwindCSS",
+    technologies: "NextJS, TypeScript, TailwindCSS",
     links: [
       {
         label: "Code",
-        href: "https://github.com/atanas-dim/searching-mapbox",
+        href: "https://github.com/atanas-dim/tiled-image-loader",
       },
       {
         label: "Live",
-        href: "https://searching-mapbox.netlify.app/",
+        href: "https://tiled-image-loader.vercel.app/",
       },
     ],
   },
@@ -54,11 +53,6 @@ export const PROJECTS: ProjectData[] = [
         href: "https://reddit-atanas.netlify.app/",
       },
     ],
-    image: {
-      src: redditClientImg,
-      alt: "",
-      isMobile: true,
-    },
   },
   {
     themeColor: "#0000BD",
@@ -72,9 +66,5 @@ export const PROJECTS: ProjectData[] = [
         href: "https://codesandbox.io/p/devbox/react-grid-calendar-jt3ry6",
       },
     ],
-    image: {
-      src: reactCalendarImg,
-      alt: "",
-    },
   },
 ];

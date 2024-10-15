@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --phone-height: min(760px, 80vmin);
+  --phone-height: min(760px, 80vmin, calc(100vh - 200px));
 }
 
 @media (orientation: portrait) {
   :root {
-    --phone-height: min(760px, 70vmax);
+    --phone-height: min(760px, 60vmax, calc(100vh - 200px));
   }
 }
 
