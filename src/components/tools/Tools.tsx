@@ -97,7 +97,7 @@ const Tools: FC<Props> = () => {
       <div
         id="tools"
         className={twMerge(
-          "-scroll-m-[50svh] w-full max-w-2xl  h-svh p-8 flex flex-col justify-center gap-3 font-bold",
+          "-scroll-m-[50svh] w-full max-w-2xl  h-svh p-8 flex flex-col justify-center gap-3 font-extrabold",
           isVisible && "fixed top-0 left-1/2 -translate-x-1/2"
         )}
       >

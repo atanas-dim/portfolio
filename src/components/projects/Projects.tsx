@@ -147,7 +147,7 @@ const Project: FC<ProjectProps> = ({
         <div className="w-full h-svh flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
           <div className="p-4 pb-10 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
             <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 text-center">
-              <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold">
+              <h2 className="text-xl lg:text-2xl xl:text-3xl font-extrabold">
                 {title}
               </h2>
               <p className="">{technologies}</p>
