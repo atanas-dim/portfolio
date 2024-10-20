@@ -106,7 +106,7 @@ const Tools: FC<Props> = () => {
             return (
               <span
                 key={"tool-" + index}
-                className="tool text-xl md:text-4xl brightness-0 opacity-0"
+                className="tool text-xl md:text-3xl brightness-0 opacity-0"
                 style={{ color: tool.color }}
               >
                 {tool.label}
@@ -115,12 +115,12 @@ const Tools: FC<Props> = () => {
           })}
         </div>
 
-        <div className="flex flex-wrap gap-x-5 gap-y-3">
+        <div className="flex flex-wrap gap-x-5 gap-y-3 md:gap-y-4">
           {MAIN_TOOLS.map((tool, index) => {
             return (
               <span
                 key={"tool-" + index}
-                className="tool text-3xl lg:text-5xl brightness-0 opacity-0"
+                className="tool text-3xl lg:text-4xl brightness-0 opacity-0"
                 style={{ color: tool.color }}
               >
                 {tool.label}
@@ -134,7 +134,7 @@ const Tools: FC<Props> = () => {
             return (
               <span
                 key={"tool-" + index}
-                className="tool text-lg md:text-2xl brightness-0 opacity-0"
+                className="tool text-lg md:text-xl brightness-0 opacity-0"
                 style={{ color: tool.color }}
               >
                 {tool.label}
