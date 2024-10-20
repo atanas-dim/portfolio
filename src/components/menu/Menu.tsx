@@ -231,7 +231,7 @@ const Menu: FC = () => {
                     style={{ height, filter: `hue-rotate(${index * 25}deg)` }}
                   />
                   <span className="label font-extrabold text-3xl">
-                    {item.label.toLowerCase()}
+                    {item.label}
                   </span>
                 </button>
               );

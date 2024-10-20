@@ -87,10 +87,10 @@ const Project: FC<ProjectProps> = ({
 
   useGSAP(() => {
     const selector = gsap.utils.selector(containerRef);
-    const randomNegX = gsap.utils.random(-40, -16, 2, true);
-    const randomPosX = gsap.utils.random(16, 40, 2, true);
+    const randomNegX = gsap.utils.random(-50, -26, 2, true);
+    const randomPosX = gsap.utils.random(26, 50, 2, true);
     const randomNegY = gsap.utils.random(-30, -10, 2, true);
-    const randomPosY = gsap.utils.random(16, 40, 2, true);
+    const randomPosY = gsap.utils.random(26, 50, 2, true);
     const randomDuration = gsap.utils.random(5, 9, 0.5, true);
 
     const glowEls = selector(".glow");

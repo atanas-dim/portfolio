@@ -16,8 +16,8 @@ const Tools: FC<Props> = () => {
 
   useGSAP(() => {
     const createTimeline = () => {
-      gsap.set(".tool", { filter: "brightness(0)", y: 16, opacity: 0 });
-      gsap.set("#tools", { y: 40 });
+      gsap.set(".tool", { filter: "brightness(0)", y: 12, opacity: 0 });
+      gsap.set("#tools > div", { y: 48 });
 
       timelineRef.current = gsap
         .timeline({
@@ -34,7 +34,7 @@ const Tools: FC<Props> = () => {
           "entry"
         )
         .to(
-          "#tools",
+          "#tools > div",
           {
             y: 0,
             duration: 2,
@@ -60,9 +60,9 @@ const Tools: FC<Props> = () => {
         )
         .addLabel("exit")
         .to(
-          "#tools",
+          "#tools > div",
           {
-            y: -40,
+            y: -48,
             duration: 2,
           },
           "exit"
@@ -70,7 +70,7 @@ const Tools: FC<Props> = () => {
         .to(
           ".tool",
           {
-            y: -16,
+            y: -12,
             opacity: 0,
             stagger: -0.05,
           },
@@ -97,11 +97,11 @@ const Tools: FC<Props> = () => {
       <div
         id="tools"
         className={twMerge(
-          "-scroll-m-[50svh] w-full max-w-3xl  h-svh p-8 flex flex-col justify-center gap-3 font-bold lowercase",
-          isVisible && "fixed top-0 left-1/2 !-translate-x-1/2"
+          "-scroll-m-[50svh] w-full max-w-2xl  h-svh p-8 flex flex-col justify-center gap-3 font-bold",
+          isVisible && "fixed top-0 left-1/2 -translate-x-1/2"
         )}
       >
-        <div className="flex flex-wrap gap-x-4 gap-y-3">
+        <div className="flex flex-wrap gap-x-5 gap-y-3">
           {BASE_TOOLS.map((tool, index) => {
             return (
               <span
@@ -115,7 +115,7 @@ const Tools: FC<Props> = () => {
           })}
         </div>
 
-        <div className="flex flex-wrap gap-x-4 gap-y-3">
+        <div className="flex flex-wrap gap-x-5 gap-y-3">
           {MAIN_TOOLS.map((tool, index) => {
             return (
               <span
@@ -129,7 +129,7 @@ const Tools: FC<Props> = () => {
           })}
         </div>
 
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <div className="flex flex-wrap gap-x-5 gap-y-2">
           {ADDITIONAL_TOOLS.map((tool, index) => {
             return (
               <span
