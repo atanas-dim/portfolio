@@ -2,23 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --phone-height: min(760px, 80vmin, calc(100vh - 200px));
+}
+
+@media (orientation: portrait) {
+  :root {
+    --phone-height: min(760px, 60vmax, calc(100vh - 200px));
+  }
+}
+
 * {
   overscroll-behavior: none;
 }
 
 html,
 body {
-  @apply w-full h-[100svh];
+  @apply w-full h-screen scroll-smooth;
 }
 
 body {
   @apply bg-white text-black font-system;
-}
-
-swiper-container {
-  @apply w-full h-[100svh] z-0;
-}
-
-.home-carousel-slide {
-  @apply max-w-2xl w-full h-[100svh] mx-auto before:bg-noise before:bg-32 before:-z-10 before:w-[100svw] before:h-[100svh] before:block before:left-1/2 before:-translate-x-1/2 before:absolute;
 }

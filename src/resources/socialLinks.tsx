@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
-import { FaGithub } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
 import { SiCodesandbox } from "react-icons/si";
 
 type SocialLink = {

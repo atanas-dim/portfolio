@@ -1,20 +1,24 @@
 "use client";
 
 import gsap from "gsap";
-import React, { useState, type FC, useRef, useEffect } from "react";
-import { Transition } from "react-transition-group";
+import React, { type FC, useEffect, useRef, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GiHamburger } from "react-icons/gi";
+import { Transition } from "react-transition-group";
+
+import useMenuStore from "@/hooks/useMenuStore";
+import { hslToHex } from "@/utils/colors";
 
 export const MENU_ITEMS = [
-  { hash: "", label: "Atanas" },
+  { hash: "intro", label: "Atanas" },
   { hash: "projects", label: "Projects" },
   { hash: "tools", label: "Tools" },
   { hash: "contact", label: "Contact" },
 ];
 
 const Menu: FC = () => {
-  const [show, setShow] = useState(false);
+  const show = useMenuStore((state) => state.show);
+  const setShow = useMenuStore((state) => state.setShow);
 
   const timeline = useRef<GSAPTimeline>();
 
@@ -56,37 +60,21 @@ const Menu: FC = () => {
         ? containerRect.width
         : containerRect.height;
 
-    const randomHue = Math.floor(Math.random() * 360);
-    const randomSaturation = Math.min(
-      70,
-      Math.max(50, Math.floor(Math.random() * 100))
-    );
+    gsap.set("#menu-modal", { y: 0 });
 
-    gsap.set(".modal", { y: 0 });
-
-    gsap.set(".item", {
+    gsap.set(".menu-item", {
       yPercent: (i) => -100 * i - shortSide,
       zIndex: (i) => MENU_ITEMS.length - i,
+      opacity: 1,
     });
 
-    gsap.set(".item-bg", {
-      backgroundColor: (i) => {
-        if (i === 0) {
-          return "#fff";
-        }
-        return `hsla(${randomHue + i * 45}, ${randomSaturation}%, 77%, 1)`;
-      },
-    });
+    const randomHue = Math.random() * 360;
+    const hexColor = hslToHex(randomHue, 85, 85);
 
-    gsap.set(".backdrop", {
-      opacity: 0,
-      backgroundColor: `hsla(${
-        randomHue + MENU_ITEMS.length * 45
-      }, ${randomSaturation}%, 66%, 0.6)`,
-      filter: "grayscale(1)",
+    gsap.set(".menu-item-bg", {
+      backgroundColor: (i) => (i === 0 ? "#ffffff" : hexColor),
     });
-
-    gsap.set(".item", { opacity: 1 });
+    gsap.set("#menu-backdrop", { backgroundColor: hexColor + "bd" });
   };
 
   const onEntering = () => {
@@ -94,25 +82,18 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
-      .to(".item", {
+      .to(".menu-item", {
         yPercent: 0,
         stagger: 0.25,
         duration: 0.8,
         ease: "back.out",
       })
       .to(
-        ".backdrop",
+        "#menu-backdrop",
         {
           opacity: 1,
         },
         0.2
-      )
-      .to(
-        ".backdrop",
-        {
-          filter: "grayscale(0)",
-        },
-        0.8
       );
   };
 
@@ -129,18 +110,19 @@ const Menu: FC = () => {
 
     timeline.current = gsap
       .timeline()
+      .to("#menu-backdrop", { duration: 0.6, opacity: 0 })
       .to(
-        ".item",
+        ".menu-item",
         {
           yPercent: (i) => -100 * i - shortSide,
           stagger: -0.1,
           duration: 0.35,
           ease: "back.in(0.8)",
+          opacity: 0,
         },
         0
       )
-      .to(".backdrop", { duration: 0.3, opacity: 0 })
-      .set(".modal", { y: "-100%" });
+      .set("#menu-modal", { y: "-100%" });
   };
 
   const toggleMenu = () => {
@@ -152,7 +134,7 @@ const Menu: FC = () => {
         duration: 0.4,
         ease: "back.in(2)",
         onComplete: () => {
-          setShow((prev) => !prev);
+          setShow(!show);
         },
       })
       .to("#menu-toggle", {
@@ -171,11 +153,22 @@ const Menu: FC = () => {
       );
   };
 
+  // Disable scrolling when the menu is open
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflowY = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflowY = "auto";
+      document.body.style.touchAction = "auto";
+    }
+  }, [show]);
+
   return (
     <>
       <button
         id="menu-toggle"
-        className="fixed z-10 bottom-3 right-3 flex w-12 h-12 justify-center items-center"
+        className="fixed z-50 bottom-3 right-3 flex w-12 h-12 justify-center items-center"
         onClick={toggleMenu}
       >
         {show ? <CgClose size="32" /> : <GiHamburger size="40" />}
@@ -191,11 +184,16 @@ const Menu: FC = () => {
       >
         <div
           ref={container}
-          className="modal w-full h-full fixed top-0 left-0 -translate-y-full"
+          id="menu-modal"
+          className="z-40 modal w-full h-full fixed top-0 left-0 -translate-y-full"
         >
           <div
-            className="backdrop w-full h-full absolute top-0 left-0 bg-gray-300 backdrop-blur-sm bg-noise bg-32 opacity-0"
+            id="menu-backdrop"
+            className=" w-full h-full absolute top-0 left-0 bg-white/50 backdrop-blur-sm bg-32 opacity-0"
             onClick={toggleMenu}
+            style={{
+              filter: `hue-rotate(${MENU_ITEMS.length * 25}deg)`,
+            }}
           />
 
           <div
@@ -207,20 +205,35 @@ const Menu: FC = () => {
           >
             {MENU_ITEMS.map((item, index) => {
               return (
-                <a
+                <button
                   key={"label-" + index}
-                  className="item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
-                  href={"/#" + item.hash}
-                  onClick={() => setShow(false)}
+                  className="menu-item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
+                  onClick={() => {
+                    setShow(false);
+                    const element = document.getElementById(item.hash);
+
+                    if (element) {
+                      gsap.delayedCall(0.6, () => {
+                        window.location.hash = item.hash;
+
+                        const el = document.getElementById(item.hash);
+
+                        el?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      });
+                    }
+                  }}
                 >
                   <span
-                    className="item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-noise bg-32"
-                    style={{ height }}
+                    className="menu-item-bg absolute left-0 bottom-0 w-full h-full -z-10 shadow-lg bg-white bg-32"
+                    style={{ height, filter: `hue-rotate(${index * 25}deg)` }}
                   />
                   <span className="label font-extrabold text-3xl">
                     {item.label.toLowerCase()}
                   </span>
-                </a>
+                </button>
               );
             })}
           </div>
