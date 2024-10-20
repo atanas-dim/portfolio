@@ -36,34 +36,42 @@ export const PROJECTS: ProjectData[] = [
       },
     ],
   },
-
+  //https://res.cloudinary.com/atanasdim/video/upload/v1729429361/portfolio/shaders-playground-compressed_xqzupi.mp4
   {
-    themeColor: "#00512F",
-    title: "Reddit Client",
-    technologies: "React, Redux, Reddit JSON API",
-    description:
-      "Front-end web application using the unofficial JSON Reddit API to recreate a simplified read-only version of the platform, featuring popular subreddits, filters, posts and comments.",
+    themeColor: "#d0e4f1",
+    videoSrc: generateCloudinaryUrl(
+      "shaders-playground-compressed_xqzupi.mp4",
+      400
+    ),
+    title: "Shaders Playground",
+    technologies: "NextJS, TypeScript, Three.js, GLSL",
     links: [
       {
         label: "Code",
-        href: "https://github.com/atanas-dim/reddit-client",
+        href: "https://github.com/atanas-dim/shaders-playground",
       },
       {
         label: "Live",
-        href: "https://reddit-atanas.netlify.app/",
+        href: "https://shaders-playground-psi.vercel.app/",
       },
     ],
   },
   {
-    themeColor: "#0000BD",
-    title: "React Calendar",
-    technologies: "React, TypeScript, date-fns, SASS",
-    description:
-      "A sandbox app using date-fns and CSS grid to create a responsive calendar.",
+    themeColor: "#3fa4ef",
+    videoSrc: generateCloudinaryUrl(
+      "searching-mapbox-compressed_ghrayz.mp4",
+      400
+    ),
+    title: "Searching Mapbox",
+    technologies: "React, TypeScript, Mapbox GL, SASS",
     links: [
       {
-        label: "CodeSandbox",
-        href: "https://codesandbox.io/p/devbox/react-grid-calendar-jt3ry6",
+        label: "Code",
+        href: "https://github.com/atanas-dim/searching-mapbox",
+      },
+      {
+        label: "Live",
+        href: "https://searching-mapbox.netlify.app/",
       },
     ],
   },

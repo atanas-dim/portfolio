@@ -93,40 +93,44 @@ const Project: FC<ProjectProps> = ({
     const randomPosY = gsap.utils.random(16, 40, 2, true);
     const randomDuration = gsap.utils.random(5, 9, 0.5, true);
 
-    gsap.set(selector(".glow"), {
-      x: (i) => {
-        if (i === 0) return randomNegX();
-        if (i === 1) return randomPosX();
-        if (i === 2) return randomPosX();
-        return 0;
-      },
-      y: (i) => {
-        if (i === 0) return randomNegY();
-        if (i === 1) return randomPosY();
-        if (i === 2) return randomNegY();
-        return 0;
-      },
-    });
+    const glowEls = selector(".glow");
 
-    gsap.to(selector(".glow"), {
-      x: (i) => {
-        if (i === 0) return randomPosX();
-        if (i === 1) return randomNegX();
-        if (i === 2) return randomNegX();
-        return 0;
-      },
-      y: (i) => {
-        if (i === 0) return randomPosY();
-        if (i === 1) return randomNegY();
-        if (i === 2) return randomPosY();
-        return 0;
-      },
-      scaleX: 0.85,
-      scaleY: 0.95,
-      duration: () => randomDuration(),
-      yoyo: true,
-      repeat: -1,
-      ease: "none",
+    glowEls.forEach((el, index) => {
+      gsap.set(el, {
+        x: () => {
+          if (index === 0) return randomNegX();
+          if (index === 1) return randomPosX();
+          if (index === 2) return randomPosX();
+          return 0;
+        },
+        y: () => {
+          if (index === 0) return randomNegY();
+          if (index === 1) return randomPosY();
+          if (index === 2) return randomNegY();
+          return 0;
+        },
+      });
+
+      gsap.to(el, {
+        x: () => {
+          if (index === 0) return randomPosX();
+          if (index === 1) return randomNegX();
+          if (index === 2) return randomNegX();
+          return 0;
+        },
+        y: () => {
+          if (index === 0) return randomPosY();
+          if (index === 1) return randomNegY();
+          if (index === 2) return randomPosY();
+          return 0;
+        },
+        scaleX: 0.85,
+        scaleY: 0.95,
+        duration: () => randomDuration(),
+        yoyo: true,
+        repeat: -1,
+        ease: "none",
+      });
     });
 
     return () => {
@@ -140,7 +144,7 @@ const Project: FC<ProjectProps> = ({
         ref={contentRef}
         className="w-full h-svh fixed inset-0 z-10 translate-x-[100%]"
       >
-        <div className="w-full h-svh flex items-center justify-center sm:gap-6 flex-col-reverse sm:flex-row">
+        <div className="w-full h-svh flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
           <div className="p-4 pb-10 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
             <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 text-center">
               <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold">
