@@ -31,7 +31,6 @@ export default async function Image() {
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          textTransform: "lowercase",
           paddingTop: 64,
           backgroundImage:
             "radial-gradient(circle at 20% 80%, #ffd3df 0%, #ffffff00 50%), radial-gradient(circle at 85% 60%, #fff4b7 0%,#ffffff00 50%)",

@@ -35,6 +35,7 @@ export const MAIN_TOOLS: SkillDef[] = [
     color: colors.lime[400],
   },
   { label: "AWS", color: colors.orange[400] },
+  { label: "ThreeJS", color: colors.indigo[400] },
 ];
 
 export const ADDITIONAL_TOOLS: SkillDef[] = [
@@ -43,7 +44,7 @@ export const ADDITIONAL_TOOLS: SkillDef[] = [
     color: colors.sky[400],
   },
   { label: "GraphQL", color: colors.pink[400] },
-  { label: "ThreeJS", color: colors.indigo[400] },
+
   {
     label: "Framer Motion",
     color: colors.purple[400],

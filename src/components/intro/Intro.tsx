@@ -49,10 +49,10 @@ const Intro: FC = () => {
         )}
       >
         <h1 className="text-4xl md:text-5xl font-extrabold md:mb-2">
-          atanas dimitrov
+          Atanas Dimitrov
         </h1>
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 md:mb-4">
-          react developer
+          React Developer
         </h2>
         <div className="flex justify-center gap-2 *:pointer-events-auto">
           {SOCIAL_LINKS.map((link, index) => {

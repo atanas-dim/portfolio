@@ -10,6 +10,8 @@ const config: Config = {
     extend: {
       backgroundImage: {
         noise: "url(/noise-dark.png)",
+        "yellow-pink-gradients":
+          "radial-gradient(circle at 20% 80%, #ffd3df 0%, #ffffff00 min(300px,50%)), radial-gradient(circle at 85% 60%, #fff4b7 0%,#ffffff00 min(360px,50%))",
       },
       backgroundSize: {
         "50%": "50%",
