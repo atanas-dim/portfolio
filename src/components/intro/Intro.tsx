@@ -44,7 +44,7 @@ const Intro: FC = () => {
       <div
         id="intro-content"
         className={twMerge(
-          "w-full h-svh flex justify-center items-center flex-col p-8 pointer-events-none",
+          "w-full h-screen flex justify-center items-center flex-col p-8 pointer-events-none",
           isVisible && "fixed top-0 left-0"
         )}
       >

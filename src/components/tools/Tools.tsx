@@ -92,12 +92,12 @@ const Tools: FC<Props> = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full h-[150svh] -mt-[50svh] pointer-events-none"
+      className="w-full h-[150vh] -mt-[50vh] mb-[10vh] pointer-events-none"
     >
       <div
         id="tools"
         className={twMerge(
-          "-scroll-m-[50svh] w-full max-w-2xl  h-svh p-8 flex flex-col justify-center gap-3 font-extrabold",
+          "-scroll-m-[50vh] w-full max-w-2xl  h-screen p-8 flex flex-col justify-center gap-3 font-extrabold",
           isVisible && "fixed top-0 left-1/2 -translate-x-1/2"
         )}
       >
