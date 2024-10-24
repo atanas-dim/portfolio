@@ -1,6 +1,7 @@
 import { useForm, ValidationError } from "@formspree/react";
 import Script from "next/script";
 import React, { FC } from "react";
+import { twMerge } from "tailwind-merge";
 
 const INPUT_CLASSES =
   "bg-white/40 border border-solid border-gray-500/30 rounded-xl shadow-inner-xl h-12 px-4 py-3 outline-blue-400";
@@ -51,7 +52,7 @@ const ContactForm: FC = () => {
                   <textarea
                     id="message"
                     name="message"
-                    className={INPUT_CLASSES + " min-h-32 max-h-80"}
+                    className={twMerge(INPUT_CLASSES, "h-32 resize-none")}
                   />
                   <ValidationError
                     prefix="Message"

@@ -65,7 +65,7 @@ const Project: FC<ProjectProps> = ({
     });
   });
 
-  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -87,10 +87,10 @@ const Project: FC<ProjectProps> = ({
 
   useGSAP(() => {
     const selector = gsap.utils.selector(containerRef);
-    const randomNegX = gsap.utils.random(-50, -26, 2, true);
-    const randomPosX = gsap.utils.random(26, 50, 2, true);
-    const randomNegY = gsap.utils.random(-30, -10, 2, true);
-    const randomPosY = gsap.utils.random(26, 50, 2, true);
+    const randomNegX = gsap.utils.random(-50, -32, 2, true);
+    const randomPosX = gsap.utils.random(32, 50, 2, true);
+    const randomNegY = gsap.utils.random(-20, -10, 2, true);
+    const randomPosY = gsap.utils.random(32, 50, 2, true);
     const randomDuration = gsap.utils.random(5, 9, 0.5, true);
 
     const glowEls = selector(".glow");
@@ -124,7 +124,7 @@ const Project: FC<ProjectProps> = ({
           if (index === 2) return randomPosY();
           return 0;
         },
-        scaleX: 0.85,
+        scaleX: 0.9,
         scaleY: 0.95,
         duration: () => randomDuration(),
         yoyo: true,
@@ -136,13 +136,13 @@ const Project: FC<ProjectProps> = ({
     return () => {
       gsap.killTweensOf(selector(".glow"));
     };
-  }, [isVisible]);
+  }, []);
 
   return (
     <div ref={containerRef} className="w-full h-screen shrink-0">
       <div
         ref={contentRef}
-        className="w-full h-svh fixed inset-0 z-10 translate-x-[100%]"
+        className="w-full h-svh fixed inset-0 z-10 translate-x-full"
       >
         <div className="w-full h-svh flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
           <div className="p-4 pb-10 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
@@ -180,15 +180,15 @@ const Project: FC<ProjectProps> = ({
             >
               <div
                 role="presentation"
-                className="glow absolute inset-0 -z-[1] blur-xl bg-[var(--shadow-color1)]"
+                className="glow absolute inset-0 -z-[1] blur-[20px] bg-[var(--shadow-color1)]"
               />
               <div
                 role="presentation"
-                className="glow absolute inset-0 -z-[2] blur-xl bg-[var(--shadow-color2)]"
+                className="glow absolute inset-0 -z-[2] blur-[20px] bg-[var(--shadow-color2)]"
               />
               <div
                 role="presentation"
-                className="glow absolute inset-0 -z-[3] blur-xl bg-[var(--shadow-color3)]"
+                className="glow absolute inset-0 -z-[3] blur-[20px] bg-[var(--shadow-color3)]"
               />
 
               {videoSrc ? (
