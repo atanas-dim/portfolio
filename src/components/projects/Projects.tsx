@@ -1,7 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import Image from "next/image";
-import { type FC, useEffect, useMemo, useRef, useState } from "react";
+import { type FC, useEffect, useMemo, useRef } from "react";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
 import { ProjectData, PROJECTS } from "@/resources/projects";
