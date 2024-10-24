@@ -205,22 +205,12 @@ const Menu: FC = () => {
           >
             {MENU_ITEMS.map((item, index) => {
               return (
-                <button
+                <a
                   key={"label-" + index}
+                  href={`#${item.hash}`}
                   className="menu-item pointer-events-auto relative opacity-0 w-full h-full max-h-28 flex-1 p-1 gap-4 flex items-center pl-[calc(50%_-_100px)]"
                   onClick={() => {
                     setShow(false);
-                    const element = document.getElementById(item.hash);
-                    if (element) {
-                      gsap.delayedCall(0.6, () => {
-                        window.history.pushState(null, "", `#${item.hash}`);
-                        const offsetTop = element.offsetTop || 0;
-                        window.scrollTo({
-                          top: offsetTop,
-                          behavior: "smooth",
-                        });
-                      });
-                    }
                   }}
                 >
                   <span
@@ -230,7 +220,7 @@ const Menu: FC = () => {
                   <span className="label font-extrabold text-3xl">
                     {item.label}
                   </span>
-                </button>
+                </a>
               );
             })}
           </div>
