@@ -1,9 +1,3 @@
-import { StaticImageData } from "next/image";
-
-import mapImg from "@/assets/images/mapbox-mobile.png";
-import reactCalendarImg from "@/assets/images/react-calendar.jpg";
-import redditClientImg from "@/assets/images/reddit-mobile.png";
-
 export type ProjectData = {
   themeColor: string;
   videoSrc?: string;
@@ -36,7 +30,6 @@ export const PROJECTS: ProjectData[] = [
       },
     ],
   },
-  //https://res.cloudinary.com/atanasdim/video/upload/v1729429361/portfolio/shaders-playground-compressed_xqzupi.mp4
   {
     themeColor: "#d0e4f1",
     videoSrc: generateCloudinaryUrl(
