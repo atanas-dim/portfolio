@@ -211,16 +211,13 @@ const Menu: FC = () => {
                   onClick={() => {
                     setShow(false);
                     const element = document.getElementById(item.hash);
-
                     if (element) {
                       gsap.delayedCall(0.6, () => {
-                        window.location.hash = item.hash;
-
-                        const el = document.getElementById(item.hash);
-
-                        el?.scrollIntoView({
+                        window.history.pushState(null, "", `#${item.hash}`);
+                        const offsetTop = element.offsetTop || 0;
+                        window.scrollTo({
+                          top: offsetTop,
                           behavior: "smooth",
-                          block: "start",
                         });
                       });
                     }
