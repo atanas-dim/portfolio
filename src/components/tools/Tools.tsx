@@ -120,7 +120,7 @@ const Tools: FC<Props> = () => {
             return (
               <span
                 key={"tool-" + index}
-                className="tool text-3xl lg:text-4xl brightness-0 opacity-0"
+                className="tool text-2xl sm:text-3xl lg:text-4xl brightness-0 opacity-0"
                 style={{ color: tool.color }}
               >
                 {tool.label}
