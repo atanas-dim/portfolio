@@ -55,7 +55,7 @@ const Project: FC<ProjectProps> = ({
       if (!containerRef.current) return;
       if (timeline) timeline.kill();
 
-      const textEls = gsap.utils.selector(containerRef)("h2, p, a");
+      const textEls = gsap.utils.selector(containerRef)("h2, p, .links");
       const videoWrapper = gsap.utils.selector(containerRef)(" .video-wrapper");
 
       const els =
@@ -63,9 +63,8 @@ const Project: FC<ProjectProps> = ({
           ? [videoWrapper, textEls]
           : [textEls, videoWrapper];
 
-      gsap.set([textEls, videoWrapper], {
-        x: 40,
-        opacity: 0,
+      gsap.set(els, {
+        x: (i) => (i + 1) * 40,
       });
 
       const newTimeline = gsap
@@ -73,14 +72,8 @@ const Project: FC<ProjectProps> = ({
           paused: true,
         })
         .to(els, {
-          x: 0,
-          opacity: 1,
-          stagger: 0.3,
-        })
-        .to(els, {
-          x: -40,
-          opacity: 0,
-          stagger: 0.3,
+          x: (i) => -(i + 1) * 40,
+          ease: "linear",
         });
 
       setTimeline(newTimeline);
@@ -115,7 +108,10 @@ const Project: FC<ProjectProps> = ({
     });
 
     if (timeline) {
-      timeline.progress(progress);
+      const mappedProgress = gsap.utils.mapRange(-0.5, 1.5, 0, 1, progress);
+
+      const timelineProgress = Math.min(1, Math.max(0, mappedProgress));
+      timeline.progress(timelineProgress);
     }
   });
 
@@ -141,10 +137,10 @@ const Project: FC<ProjectProps> = ({
 
   useGSAP(() => {
     const selector = gsap.utils.selector(containerRef);
-    const randomNegX = gsap.utils.random(-50, -32, 2, true);
-    const randomPosX = gsap.utils.random(32, 50, 2, true);
-    const randomNegY = gsap.utils.random(-20, -10, 2, true);
-    const randomPosY = gsap.utils.random(32, 50, 2, true);
+    const randomNegX = gsap.utils.random(-28, -16, 2, true);
+    const randomPosX = gsap.utils.random(16, 28, 2, true);
+    const randomNegY = gsap.utils.random(-16, -10, 2, true);
+    const randomPosY = gsap.utils.random(16, 28, 2, true);
     const randomDuration = gsap.utils.random(5, 9, 0.5, true);
 
     const glowEls = selector(".glow");
@@ -205,7 +201,7 @@ const Project: FC<ProjectProps> = ({
                 {title}
               </h2>
               <p className="">{technologies}</p>
-              <div className="flex gap-4">
+              <div className="links flex gap-4">
                 {links.map((link, index) => {
                   return (
                     <a
