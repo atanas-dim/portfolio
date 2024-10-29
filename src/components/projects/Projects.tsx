@@ -1,14 +1,15 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { type FC, useEffect, useMemo, useRef } from "react";
+import { type FC, useEffect, useMemo, useRef, useState } from "react";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
 import { ProjectData, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = `sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
+const VIDEO_WRAPPER_CLASSES = `video-wrapper sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
+const SM_BREAKPOINT = 640;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,56 @@ const Project: FC<ProjectProps> = ({
   );
   const { contextSafe } = useGSAP();
 
+  // const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
+  const [timeline, setTimeline] = useState<gsap.core.Timeline | undefined>(
+    undefined
+  );
+
+  useGSAP(() => {
+    const createTimeline = () => {
+      if (!containerRef.current) return;
+      if (timeline) timeline.kill();
+
+      const textEls = gsap.utils.selector(containerRef)("h2, p, a");
+      const videoWrapper = gsap.utils.selector(containerRef)(" .video-wrapper");
+
+      const els =
+        window.innerWidth < SM_BREAKPOINT
+          ? [videoWrapper, textEls]
+          : [textEls, videoWrapper];
+
+      gsap.set([textEls, videoWrapper], {
+        x: 40,
+        opacity: 0,
+      });
+
+      const newTimeline = gsap
+        .timeline({
+          paused: true,
+        })
+        .to(els, {
+          x: 0,
+          opacity: 1,
+          stagger: 0.3,
+        })
+        .to(els, {
+          x: -40,
+          opacity: 0,
+          stagger: 0.3,
+        });
+
+      setTimeline(newTimeline);
+    };
+
+    createTimeline();
+
+    window.addEventListener("resize", createTimeline);
+
+    return () => {
+      window.removeEventListener("resize", createTimeline);
+    };
+  }, []);
+
   const onScrollTriggerProgress = contextSafe((progress: number) => {
     const shouldPlay = progress >= 0.35 && progress <= 0.65;
 
@@ -62,6 +113,10 @@ const Project: FC<ProjectProps> = ({
     gsap.set(contentRef.current, {
       x,
     });
+
+    if (timeline) {
+      timeline.progress(progress);
+    }
   });
 
   useScrollTrigger(containerRef, onScrollTriggerProgress);
