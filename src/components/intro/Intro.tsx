@@ -1,6 +1,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { type FC, useRef } from "react";
+import { MdOutlineSwipeVertical } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
@@ -24,6 +25,10 @@ const Intro: FC = () => {
           opacity: 0,
           y: -16,
           stagger: 0.2,
+        })
+        .to("#swipe-indicator", {
+          y: 80,
+          duration: 3,
         });
     };
 
@@ -69,6 +74,12 @@ const Intro: FC = () => {
             );
           })}
         </div>
+      </div>
+      <div
+        id="swipe-indicator"
+        className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <MdOutlineSwipeVertical size="32" className="animate-bounce" />
       </div>
     </section>
   );
