@@ -36,6 +36,10 @@ export const MAIN_TOOLS: SkillDef[] = [
   },
   { label: "AWS", color: colors.orange[400] },
   { label: "ThreeJS", color: colors.indigo[400] },
+  {
+    label: "NodeJS",
+    color: colors.emerald[400],
+  },
 ];
 
 export const ADDITIONAL_TOOLS: SkillDef[] = [
@@ -58,13 +62,8 @@ export const ADDITIONAL_TOOLS: SkillDef[] = [
     label: "styled-components",
     color: colors.fuchsia[400],
   },
-
   {
     label: "i18next",
     color: colors.teal[400],
-  },
-  {
-    label: "NodeJS",
-    color: colors.emerald[400],
   },
 ];

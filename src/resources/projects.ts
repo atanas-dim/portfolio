@@ -31,7 +31,7 @@ export const PROJECTS: ProjectData[] = [
     ],
   },
   {
-    themeColor: "#d0e4f1",
+    themeColor: "#f3e991",
     videoSrc: generateCloudinaryUrl(
       "shaders-playground-compressed_xqzupi.mp4",
       400
