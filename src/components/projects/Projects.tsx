@@ -57,6 +57,7 @@ const Project: FC<ProjectProps> = ({
 
       const textEls = gsap.utils.selector(containerRef)("h2, p, .links");
       const videoWrapper = gsap.utils.selector(containerRef)(" .video-wrapper");
+      const headings = gsap.utils.selector(containerRef)("h2, p");
 
       const els =
         window.innerWidth < SM_BREAKPOINT
@@ -67,6 +68,10 @@ const Project: FC<ProjectProps> = ({
         x: (i) => (i + 1) * PARALLAX_OFFSET + "em",
       });
 
+      gsap.set(headings, {
+        textShadow: "14em 0.1em 0 rgba(0, 0, 0, 0.07)",
+      });
+
       const newTimeline = gsap
         .timeline({
           paused: true,
@@ -74,7 +79,15 @@ const Project: FC<ProjectProps> = ({
         .to(els, {
           x: (i) => -(i + 1) * PARALLAX_OFFSET + "em",
           ease: "linear",
-        });
+        })
+        .to(
+          headings,
+          {
+            textShadow: "-14em 0.1em 0 rgba(0, 0, 0, 0.07)",
+            ease: "linear",
+          },
+          0
+        );
 
       setTimeline(newTimeline);
     };
@@ -89,15 +102,15 @@ const Project: FC<ProjectProps> = ({
   }, []);
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
-    const shouldPlay = progress >= 0.35 && progress <= 0.65;
+    // const shouldPlay = progress >= 0.35 && progress <= 0.65;
 
-    if (videoRef.current) {
-      if (shouldPlay) {
-        videoRef.current.play();
-      } else {
-        videoRef.current.pause();
-      }
-    }
+    // if (videoRef.current) {
+    //   if (shouldPlay) {
+    //     videoRef.current.play();
+    //   } else {
+    //     videoRef.current.pause();
+    //   }
+    // }
 
     const interpolatedProgress = gsap.utils.interpolate(50, -50, progress);
 
@@ -192,10 +205,10 @@ const Project: FC<ProjectProps> = ({
     <div ref={containerRef} className="w-full h-screen max-h-[800px] shrink-0">
       <div
         ref={contentRef}
-        className="w-full h-screen fixed inset-0 z-10 translate-x-full bg-[radial-gradient(90vmin_at_40%_100%,#ffd3e5_0%,#ffffff00_50%)]"
+        className="w-full h-screen fixed inset-0 z-10 translate-x-full bg-[radial-gradient(80vmin_at_40%_100%,#ffd3e5_0%,#ffffff00_50%)]"
       >
         <div className="w-full h-screen flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
-          <div className="p-4 pb-10 sm:pl-14 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
+          <div className="p-4 pb-10 sm:pb-4 w-full sm:w-3/5 h-full flex flex-col sm:justify-center items-center">
             <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 md:gap-3 text-center">
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold">
                 {title}
@@ -220,7 +233,7 @@ const Project: FC<ProjectProps> = ({
               </div>
             </div>
           </div>
-          <div className="p-4 pt-12 sm:pr-14 sm:pt-4 w-full sm:w-1/2 h-full flex justify-center items-center">
+          <div className="p-4 pt-12 sm:pt-4 w-full sm:w-2/5 h-full flex justify-center items-center">
             <div
               className={VIDEO_WRAPPER_CLASSES}
               style={{

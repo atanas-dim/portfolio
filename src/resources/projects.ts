@@ -37,7 +37,7 @@ export const PROJECTS: ProjectData[] = [
       400
     ),
     title: "Shaders Playground",
-    technologies: "NextJS, TypeScript, Three.js, GLSL",
+    technologies: "NextJS, TypeScript, ThreeJS, GLSL",
     links: [
       {
         label: "Code",
