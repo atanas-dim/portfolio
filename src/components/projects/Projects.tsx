@@ -10,6 +10,7 @@ import { shiftHue } from "@/utils/hue";
 const VIDEO_WRAPPER_CLASSES = `video-wrapper sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
 const VIDEO_PLAYER_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
 const SM_BREAKPOINT = 640;
+const PARALLAX_OFFSET = 16;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +46,6 @@ const Project: FC<ProjectProps> = ({
   );
   const { contextSafe } = useGSAP();
 
-  // const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
   const [timeline, setTimeline] = useState<gsap.core.Timeline | undefined>(
     undefined
   );
@@ -64,7 +64,7 @@ const Project: FC<ProjectProps> = ({
           : [textEls, videoWrapper];
 
       gsap.set(els, {
-        x: (i) => (i + 1) * 40,
+        x: (i) => (i + 1) * PARALLAX_OFFSET + "em",
       });
 
       const newTimeline = gsap
@@ -72,7 +72,7 @@ const Project: FC<ProjectProps> = ({
           paused: true,
         })
         .to(els, {
-          x: (i) => -(i + 1) * 40,
+          x: (i) => -(i + 1) * PARALLAX_OFFSET + "em",
           ease: "linear",
         });
 
@@ -108,7 +108,7 @@ const Project: FC<ProjectProps> = ({
     });
 
     if (timeline) {
-      const mappedProgress = gsap.utils.mapRange(-0.5, 1.5, 0, 1, progress);
+      const mappedProgress = gsap.utils.mapRange(-3, 4, 0, 1, progress);
 
       const timelineProgress = Math.min(1, Math.max(0, mappedProgress));
       timeline.progress(timelineProgress);
@@ -189,18 +189,20 @@ const Project: FC<ProjectProps> = ({
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-screen shrink-0">
+    <div ref={containerRef} className="w-full h-screen max-h-[800px] shrink-0">
       <div
         ref={contentRef}
-        className="w-full h-screen fixed inset-0 z-10 translate-x-full"
+        className="w-full h-screen fixed inset-0 z-10 translate-x-full bg-[radial-gradient(90vmin_at_40%_100%,#ffd3e5_0%,#ffffff00_50%)]"
       >
         <div className="w-full h-screen flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
-          <div className="p-4 pb-10 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
-            <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 text-center">
-              <h2 className="text-xl lg:text-2xl xl:text-3xl font-extrabold">
+          <div className="p-4 pb-10 sm:pl-14 sm:pb-4 w-full sm:w-1/2 h-full flex flex-col sm:justify-center items-center">
+            <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 md:gap-3 text-center">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold">
                 {title}
               </h2>
-              <p className="">{technologies}</p>
+              <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl sm:mb-1 whitespace-nowrap">
+                {technologies}
+              </p>
               <div className="links flex gap-4">
                 {links.map((link, index) => {
                   return (
@@ -209,7 +211,7 @@ const Project: FC<ProjectProps> = ({
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline"
+                      className="[&:nth-of-type(1)]:bg-rose-300 [&:nth-of-type(2)]:bg-yellow-300 rounded-xl px-3 py-1 hover:brightness-95 active:brightness-90 transition-all duration-200 ease-in-out"
                     >
                       {link.label}
                     </a>
@@ -218,7 +220,7 @@ const Project: FC<ProjectProps> = ({
               </div>
             </div>
           </div>
-          <div className="p-4 pt-12 sm:pt-4 w-full sm:w-1/2 h-full flex justify-center items-center">
+          <div className="p-4 pt-12 sm:pr-14 sm:pt-4 w-full sm:w-1/2 h-full flex justify-center items-center">
             <div
               className={VIDEO_WRAPPER_CLASSES}
               style={{
