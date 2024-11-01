@@ -57,7 +57,6 @@ const Project: FC<ProjectProps> = ({
 
       const textEls = gsap.utils.selector(containerRef)("h2, p, .links");
       const videoWrapper = gsap.utils.selector(containerRef)(" .video-wrapper");
-      const headings = gsap.utils.selector(containerRef)("h2, p");
 
       const els =
         window.innerWidth < SM_BREAKPOINT
@@ -68,10 +67,6 @@ const Project: FC<ProjectProps> = ({
         x: (i) => (i + 1) * PARALLAX_OFFSET + "em",
       });
 
-      gsap.set(headings, {
-        textShadow: "14em 0.1em 0 rgba(0, 0, 0, 0.07)",
-      });
-
       const newTimeline = gsap
         .timeline({
           paused: true,
@@ -79,15 +74,7 @@ const Project: FC<ProjectProps> = ({
         .to(els, {
           x: (i) => -(i + 1) * PARALLAX_OFFSET + "em",
           ease: "linear",
-        })
-        .to(
-          headings,
-          {
-            textShadow: "-14em 0.1em 0 rgba(0, 0, 0, 0.07)",
-            ease: "linear",
-          },
-          0
-        );
+        });
 
       setTimeline(newTimeline);
     };
