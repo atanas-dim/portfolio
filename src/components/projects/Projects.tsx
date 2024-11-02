@@ -1,14 +1,16 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import Image from "next/image";
 import { type FC, useEffect, useMemo, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import useScrollTrigger from "@/hooks/useScrollTrigger";
-import { ProjectData, PROJECTS } from "@/resources/projects";
+import { ProjectDef, PROJECTS } from "@/resources/projects";
 import { adjustColorLightnessAndSaturation } from "@/utils/colors";
 import { shiftHue } from "@/utils/hue";
 
-const VIDEO_WRAPPER_CLASSES = `video-wrapper sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
-const VIDEO_PLAYER_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
+const MEDIA_WRAPPER_CLASSES = `media-wrapper sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
+const MEDIA_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] w-auto object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
 const SM_BREAKPOINT = 640;
 const PARALLAX_OFFSET = 16;
 
@@ -28,12 +30,11 @@ const Projects: FC = () => {
 
 export default Projects;
 
-type ProjectProps = ProjectData;
-
-const Project: FC<ProjectProps> = ({
+const Project: FC<ProjectDef> = ({
   title,
   themeColor,
   videoSrc,
+  image,
   technologies,
   links,
 }) => {
@@ -56,7 +57,7 @@ const Project: FC<ProjectProps> = ({
       if (timeline) timeline.kill();
 
       const textEls = gsap.utils.selector(containerRef)("h2, p, .links");
-      const videoWrapper = gsap.utils.selector(containerRef)(" .video-wrapper");
+      const videoWrapper = gsap.utils.selector(containerRef)(" .media-wrapper");
 
       const els =
         window.innerWidth < SM_BREAKPOINT
@@ -89,16 +90,6 @@ const Project: FC<ProjectProps> = ({
   }, []);
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
-    // const shouldPlay = progress >= 0.35 && progress <= 0.65;
-
-    // if (videoRef.current) {
-    //   if (shouldPlay) {
-    //     videoRef.current.play();
-    //   } else {
-    //     videoRef.current.pause();
-    //   }
-    // }
-
     const interpolatedProgress = gsap.utils.interpolate(50, -50, progress);
 
     const x = Math.min(100, Math.max(-100, interpolatedProgress)) + "%";
@@ -196,11 +187,11 @@ const Project: FC<ProjectProps> = ({
       >
         <div className="w-full h-screen flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
           <div className="p-4 pb-10 sm:pb-4 w-full sm:w-3/5 h-full flex flex-col sm:justify-center items-center">
-            <div className="sm:ml-auto flex flex-col justify-center items-center gap-2 md:gap-3 text-center">
+            <div className="sm:ml-auto flex flex-col justify-center items-center gap-1 md:gap-3 text-center">
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold">
                 {title}
               </h2>
-              <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl sm:mb-1 whitespace-nowrap">
+              <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-2 whitespace-nowrap">
                 {technologies}
               </p>
               <div className="links flex gap-4">
@@ -222,7 +213,7 @@ const Project: FC<ProjectProps> = ({
           </div>
           <div className="p-4 pt-12 sm:pt-4 w-full sm:w-2/5 h-full flex justify-center items-center">
             <div
-              className={VIDEO_WRAPPER_CLASSES}
+              className={MEDIA_WRAPPER_CLASSES}
               style={{
                 // @ts-expect-error
                 "--shadow-color1": adjustedColor + "60",
@@ -243,27 +234,17 @@ const Project: FC<ProjectProps> = ({
                 className="glow absolute inset-0 -z-[3] blur-[20px] bg-[var(--shadow-color3)]"
               />
 
-              {videoSrc ? (
-                <video
-                  ref={videoRef}
-                  src={videoSrc}
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className={VIDEO_PLAYER_CLASSES}
-                ></video>
-              ) : (
-                <div
-                  className={VIDEO_PLAYER_CLASSES}
-                  style={{
-                    backgroundColor: themeColor,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></div>
-              )}
+              <Image
+                src={image}
+                alt=""
+                className={twMerge(
+                  MEDIA_CLASSES,
+                  "flex justify-center items-center"
+                )}
+                style={{
+                  backgroundColor: themeColor,
+                }}
+              />
             </div>
           </div>
         </div>

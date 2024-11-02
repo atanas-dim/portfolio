@@ -1,6 +1,13 @@
-export type ProjectData = {
+import { StaticImageData } from "next/image";
+
+import searchingMapboxImg from "@/assets/images/mapbox-search.jpg";
+import shadersPlaygroundImg from "@/assets/images/shaders-playground.jpg";
+import tiledImageLoaderImg from "@/assets/images/tiled-image-loader.jpg";
+
+export type ProjectDef = {
   themeColor: string;
   videoSrc?: string;
+  image: StaticImageData;
   title: string;
   technologies: string;
   description?: string;
@@ -10,13 +17,14 @@ export type ProjectData = {
 function generateCloudinaryUrl(fileName: string, width: number) {
   return `https://res.cloudinary.com/atanasdim/video/upload/w_${width}/portfolio/${fileName}`;
 }
-export const PROJECTS: ProjectData[] = [
+export const PROJECTS: ProjectDef[] = [
   {
     themeColor: "#f1dec2",
     videoSrc: generateCloudinaryUrl(
       "tiled-image-loader-compressed_ba1if1.mp4",
       400
     ),
+    image: tiledImageLoaderImg,
     title: "Tiled Image Loader",
     technologies: "NextJS, TypeScript, TailwindCSS",
     links: [
@@ -36,6 +44,7 @@ export const PROJECTS: ProjectData[] = [
       "shaders-playground-compressed_xqzupi.mp4",
       400
     ),
+    image: shadersPlaygroundImg,
     title: "Shaders Playground",
     technologies: "NextJS, TypeScript, ThreeJS, GLSL",
     links: [
@@ -55,6 +64,7 @@ export const PROJECTS: ProjectData[] = [
       "searching-mapbox-compressed_ghrayz.mp4",
       400
     ),
+    image: searchingMapboxImg,
     title: "Searching Mapbox",
     technologies: "React, TypeScript, Mapbox GL, SASS",
     links: [
