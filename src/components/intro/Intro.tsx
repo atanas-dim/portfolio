@@ -45,7 +45,7 @@ const Intro: FC = () => {
   const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   return (
-    <section id="intro" ref={containerRef} className="w-full h-svh">
+    <section id="intro" ref={containerRef} className="w-full h-[150vh]">
       <div
         id="intro-content"
         className={twMerge(

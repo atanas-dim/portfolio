@@ -17,7 +17,6 @@ const Tools: FC<Props> = () => {
   useGSAP(() => {
     const createTimeline = () => {
       gsap.set(".tool", { filter: "brightness(0)", y: 12, opacity: 0 });
-      gsap.set("#tools > div", { y: 48 });
 
       timelineRef.current = gsap
         .timeline({
@@ -33,14 +32,7 @@ const Tools: FC<Props> = () => {
           },
           "entry"
         )
-        .to(
-          "#tools > div",
-          {
-            y: 0,
-            duration: 2,
-          },
-          "entry"
-        )
+
         .addLabel("brightess-anim")
         .to(
           ".tool",
@@ -59,14 +51,7 @@ const Tools: FC<Props> = () => {
           "brightess-anim+=0.5"
         )
         .addLabel("exit")
-        .to(
-          "#tools > div",
-          {
-            y: -48,
-            duration: 2,
-          },
-          "exit"
-        )
+
         .to(
           ".tool",
           {
