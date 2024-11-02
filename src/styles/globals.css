@@ -22,5 +22,5 @@ body {
 }
 
 body {
-  @apply bg-white text-black font-system;
+  @apply bg-white text-black font-system overflow-x-hidden;
 }
