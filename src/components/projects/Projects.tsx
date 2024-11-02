@@ -106,7 +106,7 @@ const Project: FC<ProjectDef> = ({
       >
         <div
           role="presentation"
-          className="glow bg-[radial-gradient(80vmin_at_40%_100%,#ffd3e5_0%,#ffffff00_50%)] absolute inset-0 -z-10"
+          className="glow bg-[radial-gradient(80vmin_at_40%_100%,#ffd3e5_0%,#ffffff00_50%)] absolute inset-0 -z-10 pointer-events-none"
         />
 
         <div className="w-full h-screen flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
