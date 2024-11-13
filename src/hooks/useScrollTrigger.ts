@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useState } from 'react';
 
 const useScrollTrigger = (
   triggerRef: MutableRefObject<HTMLElement | null>,
@@ -15,25 +15,25 @@ const useScrollTrigger = (
         window.scrollY <
           triggerRef.current.offsetTop + triggerRef.current.offsetHeight;
 
-      setIsVisible(isVisible);
-
       const progress =
         (window.scrollY +
           window.innerHeight / 2 -
           triggerRef.current.offsetTop) /
         triggerRef.current.offsetHeight;
 
+      setIsVisible(isVisible);
+
       onProgress?.(progress);
     };
 
     calculateProgress();
 
-    window.addEventListener("scroll", calculateProgress);
-    window.addEventListener("orientationchange", calculateProgress);
+    window.addEventListener('scroll', calculateProgress);
+    window.addEventListener('orientationchange', calculateProgress);
 
     return () => {
-      window.removeEventListener("scroll", calculateProgress);
-      window.removeEventListener("orientationchange", calculateProgress);
+      window.removeEventListener('scroll', calculateProgress);
+      window.removeEventListener('orientationchange', calculateProgress);
     };
   }, [onProgress, triggerRef]);
 

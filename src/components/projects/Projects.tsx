@@ -1,16 +1,16 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import Image from "next/image";
-import { type FC, useRef, useState } from "react";
-import { twMerge } from "tailwind-merge";
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import Image from 'next/image';
+import { type FC, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-import useScrollTrigger from "@/hooks/useScrollTrigger";
-import { ProjectDef, PROJECTS } from "@/resources/projects";
+import useScrollTrigger from '@/hooks/useScrollTrigger';
+import { ProjectDef, PROJECTS } from '@/resources/projects';
 
-const MEDIA_WRAPPER_CLASSES = `media-wrapper will-change-transform sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
+const MEDIA_WRAPPER_CLASSES = `media-wrapper will-change-transform shadow-2xl sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
 const MEDIA_CLASSES = `bg-black shadow-[0px_0px_0px_5px_#131313] aspect-[1178/2556] w-auto object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
 const SM_BREAKPOINT = 640;
-const PARALLAX_OFFSET = 64;
+const PARALLAX_OFFSET = 128;
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +38,7 @@ const Project: FC<ProjectDef> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isFixed, setIsFixed] = useState(false);
 
   const { contextSafe } = useGSAP();
 
@@ -50,41 +51,59 @@ const Project: FC<ProjectDef> = ({
       if (!contentRef.current) return;
       if (elsTimeline) elsTimeline.kill();
 
-      const textEls = gsap.utils.selector(contentRef)("h2, p, .links");
-      const mediaWrapper = gsap.utils.selector(contentRef)(" .media-wrapper");
-      const glow = gsap.utils.selector(contentRef)(".glow");
+      const textEls = gsap.utils.selector(contentRef)('h2, p, .links');
+      const mediaWrapper = gsap.utils.selector(contentRef)(' .media-wrapper');
+      const glow = gsap.utils.selector(contentRef)('.glow');
 
       const els =
         window.innerWidth < SM_BREAKPOINT
           ? [mediaWrapper, textEls, glow]
           : [textEls, mediaWrapper, glow];
 
+      const rotationY =
+        window.innerWidth < SM_BREAKPOINT ? 24 : window.innerWidth / 70;
+
+      gsap.set(contentRef.current, {
+        x: (i) => window.innerWidth * 1.75 * (i + 1),
+      });
       gsap.set(els, {
-        x: (i) => window.innerWidth * 1.75 + (i + 1) * PARALLAX_OFFSET,
+        x: (i) => (i + 1) * PARALLAX_OFFSET,
+        rotationY: (i) => (i + 1) * rotationY,
       });
 
       const newTimeline = gsap
         .timeline({
           paused: true,
         })
-        .to(els, {
-          x: (i) => -(window.innerWidth * 1.75 + (i + 1) * PARALLAX_OFFSET),
-          ease: "linear",
-        });
+        .to(contentRef.current, {
+          x: (i) => -(window.innerWidth * 1.75 * (i + 1)),
+          ease: 'linear',
+        })
+        .to(
+          els,
+          {
+            x: (i) => -(i + 1) * PARALLAX_OFFSET,
+            rotationY: (i) => -rotationY * (i + 1),
+            ease: 'linear',
+          },
+          0
+        );
 
       setElsTimeline(newTimeline);
     };
 
     createElsTimeline();
 
-    window.addEventListener("resize", createElsTimeline);
+    window.addEventListener('resize', createElsTimeline);
 
     return () => {
-      window.removeEventListener("resize", createElsTimeline);
+      window.removeEventListener('resize', createElsTimeline);
     };
   }, []);
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
+    setIsFixed(progress >= -0.5 && progress <= 1.5);
+
     if (elsTimeline) {
       const mappedProgress = gsap.utils.mapRange(-1, 2, 0, 1, progress);
 
@@ -93,15 +112,15 @@ const Project: FC<ProjectDef> = ({
     }
   });
 
-  const isActive = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  useScrollTrigger(containerRef, onScrollTriggerProgress);
 
   return (
-    <div ref={containerRef} className="w-full h-screen  max-h-[800px] shrink-0">
+    <div ref={containerRef} className="w-full h-screen max-h-[800px] shrink-0">
       <div
         ref={contentRef}
         className={twMerge(
-          "w-full h-screen overflow-hidden",
-          isActive && "fixed inset-0"
+          'w-full h-screen overflow-hidden',
+          isFixed && 'fixed inset-0'
         )}
       >
         <div
@@ -111,7 +130,7 @@ const Project: FC<ProjectDef> = ({
 
         <div className="w-full h-screen flex items-center justify-center sm:gap-6 lg:gap-10 flex-col-reverse sm:flex-row">
           <div className="p-4 pb-10 sm:pb-4 w-full sm:w-3/5 h-full flex flex-col sm:justify-center items-center">
-            <div className="sm:ml-auto flex flex-col justify-center items-center gap-1 md:gap-3 text-center">
+            <div className="[perspective:700px] [perspective-origin:50%_-60%] sm:[perspective-origin:150%_50%] sm:ml-auto flex flex-col justify-center items-center gap-1 md:gap-3 text-center">
               <h2 className="will-change-transform text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold">
                 {title}
               </h2>
@@ -122,7 +141,7 @@ const Project: FC<ProjectDef> = ({
                 {links.map((link, index) => {
                   return (
                     <a
-                      key={title.split(" ").join("-") + "-link-" + index}
+                      key={title.split(' ').join('-') + '-link-' + index}
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -135,14 +154,14 @@ const Project: FC<ProjectDef> = ({
               </div>
             </div>
           </div>
-          <div className="p-4 pt-12 sm:pt-4 w-full sm:w-2/5 h-full flex justify-center items-center">
+          <div className="media [perspective:1450px] [perspective-origin:50%_50%] p-4 pt-12 sm:pt-4 w-full sm:w-2/5 h-full flex justify-center items-center">
             <div className={MEDIA_WRAPPER_CLASSES}>
               <Image
                 src={image}
                 alt=""
                 className={twMerge(
                   MEDIA_CLASSES,
-                  "flex justify-center items-center"
+                  'flex justify-center items-center'
                 )}
               />
             </div>
