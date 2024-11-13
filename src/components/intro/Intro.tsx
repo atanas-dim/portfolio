@@ -1,18 +1,21 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { type FC, useRef } from "react";
-import { MdOutlineSwipeVertical } from "react-icons/md";
-import { twMerge } from "tailwind-merge";
+import { useGSAP } from '@gsap/react';
+import { useViewportSize } from '@mantine/hooks';
+import gsap from 'gsap';
+import { type FC, useRef } from 'react';
+import { MdOutlineSwipeVertical } from 'react-icons/md';
+import { twMerge } from 'tailwind-merge';
 
-import useScrollTrigger from "@/hooks/useScrollTrigger";
-import { SOCIAL_LINKS } from "@/resources/socialLinks";
+import useScrollTrigger from '@/hooks/useScrollTrigger';
+import { SM_BREAKPOINT } from '@/resources/breakpoints';
+import { SOCIAL_LINKS } from '@/resources/socialLinks';
 
 const Intro: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
+  const { width } = useViewportSize();
 
   useGSAP(() => {
-    const els = gsap.utils.selector(containerRef.current)("h1, h2, a");
+    const els = gsap.utils.selector(containerRef.current)('h1, h2, a');
 
     const createTimeline = () => {
       gsap.set(els, { opacity: 1, y: 0 });
@@ -26,10 +29,14 @@ const Intro: FC = () => {
           y: -16,
           stagger: 0.2,
         })
-        .to("#swipe-indicator", {
-          y: 80,
-          duration: 3,
-        });
+        .to(
+          '#swipe-indicator',
+          {
+            y: 80,
+            duration: 2,
+          },
+          0
+        );
     };
 
     createTimeline();
@@ -38,19 +45,23 @@ const Intro: FC = () => {
   const { contextSafe } = useGSAP();
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
-    const interpolated = gsap.utils.interpolate(-2, 1, progress);
-    timelineRef.current?.progress(interpolated);
+    const mappedProgress = gsap.utils.mapRange(0.5, 1.5, 0, 1, progress);
+    timelineRef.current?.progress(mappedProgress);
   });
 
-  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  const isVisible = useScrollTrigger(
+    containerRef,
+    onScrollTriggerProgress,
+    width < SM_BREAKPOINT ? 'back.out(20)' : 'back.out(8)'
+  );
 
   return (
-    <section id="intro" ref={containerRef} className="w-full h-[150vh]">
+    <section id="intro" ref={containerRef} className="w-full h-screen">
       <div
         id="intro-content"
         className={twMerge(
-          "w-full h-screen flex justify-center items-center flex-col p-8 pointer-events-none",
-          isVisible && "fixed top-0 left-0"
+          'w-full h-screen flex justify-center items-center flex-col p-8 pointer-events-none',
+          isVisible && 'fixed top-0 left-0'
         )}
       >
         <h1 className="text-3xl md:text-4xl lg:text-5xl  font-extrabold md:mb-2">
@@ -63,7 +74,7 @@ const Intro: FC = () => {
           {SOCIAL_LINKS.map((link, index) => {
             return (
               <a
-                key={"link-" + index}
+                key={'link-' + index}
                 className="w-12 h-12 flex justify-center items-center"
                 target="_blank"
                 rel="noreferrer"

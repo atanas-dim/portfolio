@@ -1,65 +1,68 @@
-"use client";
+'use client';
 
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import React, { type FC, useRef, useState } from "react";
-import { twMerge } from "tailwind-merge";
+import { useGSAP } from '@gsap/react';
+import { useViewportSize } from '@mantine/hooks';
+import gsap from 'gsap';
+import React, { type FC, useRef } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-import useScrollTrigger from "@/hooks/useScrollTrigger";
-import { ADDITIONAL_TOOLS, BASE_TOOLS, MAIN_TOOLS } from "@/resources/tools";
+import useScrollTrigger from '@/hooks/useScrollTrigger';
+import { SM_BREAKPOINT } from '@/resources/breakpoints';
+import { ADDITIONAL_TOOLS, BASE_TOOLS, MAIN_TOOLS } from '@/resources/tools';
 
 type Props = {};
 
 const Tools: FC<Props> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
+  const { width } = useViewportSize();
 
   useGSAP(() => {
     const createTimeline = () => {
-      gsap.set(".tool", { filter: "brightness(0)", y: 12, opacity: 0 });
+      gsap.set('.tool', { filter: 'brightness(0)', y: 12, opacity: 0 });
 
       timelineRef.current = gsap
         .timeline({
           paused: true,
         })
-        .addLabel("entry")
+        .addLabel('entry')
         .to(
-          ".tool",
+          '.tool',
           {
             y: 0,
             opacity: 1,
             stagger: 0.1,
           },
-          "entry"
+          'entry'
         )
 
-        .addLabel("brightess-anim")
+        .addLabel('brightess-anim')
         .to(
-          ".tool",
+          '.tool',
           {
-            filter: "brightness(1)",
+            filter: 'brightness(1)',
             stagger: -0.1,
           },
-          "brightess-anim"
+          'brightess-anim'
         )
         .to(
-          ".tool",
+          '.tool',
           {
-            filter: "brightness(0)",
+            filter: 'brightness(0)',
             stagger: -0.1,
           },
-          "brightess-anim+=0.5"
+          'brightess-anim+=0.5'
         )
-        .addLabel("exit")
+        .addLabel('exit')
 
         .to(
-          ".tool",
+          '.tool',
           {
             y: -12,
             opacity: 0,
             stagger: -0.05,
           },
-          "exit"
+          'exit'
         );
     };
 
@@ -72,7 +75,11 @@ const Tools: FC<Props> = () => {
     timelineRef.current?.progress(Math.min(1, Math.max(0, progress)));
   });
 
-  const isVisible = useScrollTrigger(containerRef, onScrollTriggerProgress);
+  const isVisible = useScrollTrigger(
+    containerRef,
+    onScrollTriggerProgress,
+    width < SM_BREAKPOINT ? 'back.out(32)' : 'back.out(10)'
+  );
 
   return (
     <section
@@ -82,15 +89,15 @@ const Tools: FC<Props> = () => {
       <div
         id="tools"
         className={twMerge(
-          "-scroll-m-[50vh] w-full max-w-2xl  h-screen p-8 flex flex-col justify-center gap-3 font-extrabold",
-          isVisible && "fixed top-0 left-1/2 -translate-x-1/2"
+          '-scroll-m-[50vh] w-full max-w-2xl  h-screen p-8 flex flex-col justify-center gap-3 font-extrabold',
+          isVisible && 'fixed top-0 left-1/2 -translate-x-1/2'
         )}
       >
         <div className="flex flex-wrap gap-x-5 gap-y-3">
           {BASE_TOOLS.map((tool, index) => {
             return (
               <span
-                key={"tool-" + index}
+                key={'tool-' + index}
                 className="tool text-xl sm:text-2xl brightness-0 opacity-0 flex items-center"
                 style={{ color: tool.color }}
               >
@@ -104,7 +111,7 @@ const Tools: FC<Props> = () => {
           {MAIN_TOOLS.map((tool, index) => {
             return (
               <span
-                key={"tool-" + index}
+                key={'tool-' + index}
                 className="tool text-2xl sm:text-3xl lg:text-4xl brightness-0 opacity-0 flex items-center"
                 style={{ color: tool.color }}
               >
@@ -115,7 +122,7 @@ const Tools: FC<Props> = () => {
           {ADDITIONAL_TOOLS.map((tool, index) => {
             return (
               <span
-                key={"tool-" + index}
+                key={'tool-' + index}
                 className="tool text-xl sm:text-2xl brightness-0 opacity-0 flex items-center"
                 style={{ color: tool.color }}
               >
