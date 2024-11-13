@@ -1,11 +1,11 @@
-"use client";
-import { type FC } from "react";
+'use client';
+import { type FC } from 'react';
 
-import ContactForm from "@/components/contact/Contact";
-import Footer from "@/components/footer/Footer";
-import Intro from "@/components/intro/Intro";
-import Projects from "@/components/projects/Projects";
-import Tools from "@/components/tools/Tools";
+import ContactForm from '@/components/contact/Contact';
+import Footer from '@/components/footer/Footer';
+import Intro from '@/components/intro/Intro';
+import Projects from '@/components/projects/Projects';
+import Tools from '@/components/tools/Tools';
 
 const HomePage: FC = () => {
   return (

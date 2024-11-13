@@ -44,6 +44,7 @@ const Project: FC<ProjectDef> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const [isFixed, setIsFixed] = useState(false);
   const { width } = useViewportSize();
+  const previousHeight = useRef(0);
 
   const { contextSafe } = useGSAP();
 
@@ -116,10 +117,27 @@ const Project: FC<ProjectDef> = ({
 
     createElsTimeline();
 
-    window.addEventListener('orientationchange', createElsTimeline);
+    const onResize = () => {
+      const currentHeight = window.innerHeight;
+
+      // Fix for mobile browsers where the height changes when the address bar is shown/shrunk
+      // Only proceed if the height difference is significant
+      if (Math.abs(currentHeight - previousHeight.current) > 120) {
+        createElsTimeline();
+      }
+
+      // Update the previous height
+      previousHeight.current = currentHeight;
+    };
+
+    window.addEventListener('orientationchange', onResize);
+
+    window.addEventListener('resize', onResize);
 
     return () => {
-      window.removeEventListener('orientationchange', createElsTimeline);
+      window.removeEventListener('orientationchange', onResize);
+
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
