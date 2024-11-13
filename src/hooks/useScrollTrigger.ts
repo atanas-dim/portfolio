@@ -1,10 +1,13 @@
-import { MutableRefObject, useEffect, useState } from 'react';
+import gsap from 'gsap';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 const useScrollTrigger = (
   triggerRef: MutableRefObject<HTMLElement | null>,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  ease?: string
 ) => {
   const [isVisible, setIsVisible] = useState(false);
+  const progressValue = useRef(0);
 
   useEffect(() => {
     const calculateProgress = () => {
@@ -23,7 +26,14 @@ const useScrollTrigger = (
 
       setIsVisible(isVisible);
 
-      onProgress?.(progress);
+      gsap.to(progressValue, {
+        current: progress,
+        onUpdate: () => {
+          onProgress?.(progressValue.current);
+        },
+        duration: 1,
+        ease: ease || 'back.out(4)',
+      });
     };
 
     calculateProgress();
@@ -35,7 +45,7 @@ const useScrollTrigger = (
       window.removeEventListener('scroll', calculateProgress);
       window.removeEventListener('orientationchange', calculateProgress);
     };
-  }, [onProgress, triggerRef]);
+  }, [onProgress, triggerRef, ease]);
 
   return isVisible;
 };

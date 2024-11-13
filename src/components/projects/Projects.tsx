@@ -5,13 +5,13 @@ import { type FC, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import useScrollTrigger from '@/hooks/useScrollTrigger';
+import { SM_BREAKPOINT } from '@/resources/breakpoints';
 import { ProjectDef, PROJECTS } from '@/resources/projects';
 
 const MEDIA_WRAPPER_CLASSES = `media-wrapper will-change-transform shadow-2xl sm:mr-auto bg-white relative p-[calc(0.02*var(--phone-height))] rounded-[calc(0.08*var(--phone-height))] size-fit border border-black`;
 const MEDIA_CLASSES = `bg-black shadow-[0px_0px_0px_calc(0.012*var(--phone-height))_#131313] aspect-[1178/2556] w-auto object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
-const SM_BREAKPOINT = 640;
 const MAX_PARALLAX_OFFSET = 128;
-const WINDOW_WIDTH_MULTIPLIER = 1.5;
+const WINDOW_WIDTH_MULTIPLIER = 1.75;
 const MAX_ROTATION_Y = 24;
 
 const Projects: FC = () => {
@@ -113,10 +113,10 @@ const Project: FC<ProjectDef> = ({
 
     createElsTimeline();
 
-    window.addEventListener('resize', createElsTimeline);
+    window.addEventListener('orientationchange', createElsTimeline);
 
     return () => {
-      window.removeEventListener('resize', createElsTimeline);
+      window.removeEventListener('orientationchange', createElsTimeline);
     };
   }, []);
 
@@ -131,7 +131,11 @@ const Project: FC<ProjectDef> = ({
     }
   });
 
-  useScrollTrigger(containerRef, onScrollTriggerProgress);
+  useScrollTrigger(
+    containerRef,
+    onScrollTriggerProgress,
+    window.innerWidth < SM_BREAKPOINT ? 'back.out(16)' : 'back.out(4)'
+  );
 
   return (
     <div ref={containerRef} className="w-full h-screen max-h-[800px] shrink-0">
