@@ -1,4 +1,5 @@
 import { useGSAP } from '@gsap/react';
+import { useViewportSize } from '@mantine/hooks';
 import gsap from 'gsap';
 import { type FC, useRef } from 'react';
 import { MdOutlineSwipeVertical } from 'react-icons/md';
@@ -11,6 +12,7 @@ import { SOCIAL_LINKS } from '@/resources/socialLinks';
 const Intro: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
+  const { width } = useViewportSize();
 
   useGSAP(() => {
     const els = gsap.utils.selector(containerRef.current)('h1, h2, a');
@@ -43,14 +45,14 @@ const Intro: FC = () => {
   const { contextSafe } = useGSAP();
 
   const onScrollTriggerProgress = contextSafe((progress: number) => {
-    const mappedProgress = gsap.utils.mapRange(0.5, 2.5, 0, 1, progress);
+    const mappedProgress = gsap.utils.mapRange(0.5, 1.5, 0, 1, progress);
     timelineRef.current?.progress(mappedProgress);
   });
 
   const isVisible = useScrollTrigger(
     containerRef,
     onScrollTriggerProgress,
-    window.innerWidth < SM_BREAKPOINT ? 'back.out(20)' : 'back.out(8)'
+    width < SM_BREAKPOINT ? 'back.out(20)' : 'back.out(8)'
   );
 
   return (

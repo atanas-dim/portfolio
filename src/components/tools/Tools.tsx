@@ -1,8 +1,9 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
+import { useViewportSize } from '@mantine/hooks';
 import gsap from 'gsap';
-import React, { type FC, useRef, useState } from 'react';
+import React, { type FC, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import useScrollTrigger from '@/hooks/useScrollTrigger';
@@ -14,6 +15,7 @@ type Props = {};
 const Tools: FC<Props> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | undefined>(undefined);
+  const { width } = useViewportSize();
 
   useGSAP(() => {
     const createTimeline = () => {
@@ -76,7 +78,7 @@ const Tools: FC<Props> = () => {
   const isVisible = useScrollTrigger(
     containerRef,
     onScrollTriggerProgress,
-    window.innerWidth < SM_BREAKPOINT ? 'back.out(32)' : 'back.out(10)'
+    width < SM_BREAKPOINT ? 'back.out(32)' : 'back.out(10)'
   );
 
   return (

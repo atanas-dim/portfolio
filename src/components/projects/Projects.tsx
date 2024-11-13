@@ -1,4 +1,5 @@
 import { useGSAP } from '@gsap/react';
+import { useViewportSize } from '@mantine/hooks';
 import gsap from 'gsap';
 import Image from 'next/image';
 import { type FC, useRef, useState } from 'react';
@@ -42,6 +43,7 @@ const Project: FC<ProjectDef> = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isFixed, setIsFixed] = useState(false);
+  const { width } = useViewportSize();
 
   const { contextSafe } = useGSAP();
 
@@ -58,6 +60,7 @@ const Project: FC<ProjectDef> = ({
       const mediaWrapper = gsap.utils.selector(wrapperRef)(' .media-wrapper');
       const glow = gsap.utils.selector(wrapperRef)('.glow');
 
+      // Not using width from useViewportSize because it's breaking the layout
       const els =
         window.innerWidth < SM_BREAKPOINT
           ? [mediaWrapper, textEls, glow]
@@ -134,7 +137,8 @@ const Project: FC<ProjectDef> = ({
   useScrollTrigger(
     containerRef,
     onScrollTriggerProgress,
-    window.innerWidth < SM_BREAKPOINT ? 'back.out(16)' : 'back.out(4)'
+    // Using width from useViewportSize because it doesn't triggers server side errors from window undefined
+    width < SM_BREAKPOINT ? 'back.out(16)' : 'back.out(3)'
   );
 
   return (
