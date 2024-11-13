@@ -14,6 +14,13 @@ const MEDIA_CLASSES = `bg-black shadow-[0px_0px_0px_calc(0.012*var(--phone-heigh
 const MAX_PARALLAX_OFFSET = 128;
 const WINDOW_WIDTH_MULTIPLIER = 1.75;
 const MAX_ROTATION_Y = 24;
+const MAX_X_TRANSLATE = 2200;
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  );
+}
 
 const Projects: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -53,7 +60,7 @@ const Project: FC<ProjectDef> = ({
   >(undefined);
 
   useGSAP(() => {
-    const createElsTimeline = () => {
+    const createTimeline = () => {
       if (!wrapperRef.current) return;
       if (elsTimeline) elsTimeline.kill();
 
@@ -78,7 +85,12 @@ const Project: FC<ProjectDef> = ({
           : MAX_PARALLAX_OFFSET;
 
       gsap.set(wrapperRef.current, {
-        x: (i) => window.innerWidth * WINDOW_WIDTH_MULTIPLIER * (i + 1),
+        x: (i) =>
+          Math.min(
+            MAX_X_TRANSLATE,
+            window.innerWidth * WINDOW_WIDTH_MULTIPLIER
+          ) *
+          (i + 1),
       });
       gsap.set(contentRef.current, {
         rotationY: rotationY,
@@ -92,7 +104,14 @@ const Project: FC<ProjectDef> = ({
           paused: true,
         })
         .to(wrapperRef.current, {
-          x: (i) => -(window.innerWidth * WINDOW_WIDTH_MULTIPLIER * (i + 1)),
+          x: (i) =>
+            -(
+              Math.min(
+                MAX_X_TRANSLATE,
+                window.innerWidth * WINDOW_WIDTH_MULTIPLIER
+              ) *
+              (i + 1)
+            ),
           ease: 'linear',
         })
         .to(
@@ -115,16 +134,19 @@ const Project: FC<ProjectDef> = ({
       setElsTimeline(newTimeline);
     };
 
-    createElsTimeline();
+    createTimeline();
 
     const onResize = () => {
       const currentHeight = window.innerHeight;
+      const isMobile = isMobileDevice();
 
       // Fix for mobile browsers where the height changes when the address bar is shown/shrunk
-      // Only proceed if the height difference is significant
-      if (Math.abs(currentHeight - previousHeight.current) > 120) {
-        createElsTimeline();
-      }
+      // Only proceed if the height difference is significant on mobile
+      if (isMobile) {
+        if (Math.abs(currentHeight - previousHeight.current) > 100) {
+          createTimeline();
+        }
+      } else createTimeline();
 
       // Update the previous height
       previousHeight.current = currentHeight;
