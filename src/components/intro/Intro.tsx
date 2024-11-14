@@ -52,7 +52,7 @@ const Intro: FC = () => {
   const isVisible = useScrollTrigger(
     containerRef,
     onScrollTriggerProgress,
-    width < SM_BREAKPOINT ? 'back.out(20)' : 'back.out(8)'
+    width < SM_BREAKPOINT ? 20 : 8
   );
 
   return (

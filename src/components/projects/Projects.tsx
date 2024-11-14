@@ -13,7 +13,7 @@ const MEDIA_WRAPPER_CLASSES = `media-wrapper will-change-transform shadow-2xl sm
 const MEDIA_CLASSES = `bg-black shadow-[0px_0px_0px_calc(0.012*var(--phone-height))_#131313] aspect-[1178/2556] w-auto object-cover border border-black h-[var(--phone-height)] rounded-[calc(0.06*var(--phone-height))]`;
 const MAX_PARALLAX_OFFSET = 128;
 const WINDOW_WIDTH_MULTIPLIER = 1.75;
-const MAX_ROTATION_Y = 24;
+const MAX_ROTATION_Y = 48;
 const MAX_X_TRANSLATE = 2200;
 
 function isMobileDevice() {
@@ -68,7 +68,6 @@ const Project: FC<ProjectDef> = ({
       const mediaWrapper = gsap.utils.selector(wrapperRef)(' .media-wrapper');
       const glow = gsap.utils.selector(wrapperRef)('.glow');
 
-      // Not using width from useViewportSize because it's breaking the layout
       const els =
         window.innerWidth < SM_BREAKPOINT
           ? [mediaWrapper, textEls, glow]
@@ -77,7 +76,7 @@ const Project: FC<ProjectDef> = ({
       const rotationY =
         window.innerWidth < SM_BREAKPOINT
           ? MAX_ROTATION_Y
-          : Math.min(MAX_ROTATION_Y, window.innerWidth / 60);
+          : Math.min(MAX_ROTATION_Y, window.innerWidth / 30);
 
       const parallaxOffset =
         window.innerWidth < SM_BREAKPOINT
@@ -178,7 +177,8 @@ const Project: FC<ProjectDef> = ({
     containerRef,
     onScrollTriggerProgress,
     // Using width from useViewportSize because it doesn't triggers server side errors from window undefined
-    width < SM_BREAKPOINT ? 'back.out(16)' : 'back.out(3)'
+    width < SM_BREAKPOINT ? 3 : 4,
+    width < SM_BREAKPOINT ? 2 : 1.2
   );
 
   return (
@@ -186,7 +186,7 @@ const Project: FC<ProjectDef> = ({
       <div
         ref={wrapperRef}
         className={twMerge(
-          '[perspective:1600px] w-full h-screen overflow-hidden relative',
+          '[perspective:1500px] w-full h-screen overflow-hidden relative',
           isFixed && 'fixed inset-0'
         )}
       >
