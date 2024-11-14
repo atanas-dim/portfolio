@@ -4,15 +4,14 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 // TODO Update this to use object for options
 const useScrollTrigger = (
   triggerRef: MutableRefObject<HTMLElement | null>,
-  onProgress?: (progress: number, speed: number) => void,
+  onProgress?: (progress: number) => void,
   easeOvershoot?: number,
-  duration?: number
+  durationValue?: number
 ) => {
   const [isVisible, setIsVisible] = useState(false);
   const progressValue = useRef(0);
   const tween = useRef<gsap.core.Tween>();
   const lastScrollY = useRef(0);
-  const lastTimestamp = useRef(Date.now());
 
   //TODO Review speed logic and use debounced value if possible
   useEffect(() => {
@@ -20,16 +19,12 @@ const useScrollTrigger = (
       if (!triggerRef.current) return;
 
       const currentScrollY = window.scrollY;
-      const currentTime = Date.now();
 
       // Calculate scroll speed (pixels per millisecond)
       const scrollDistance = Math.abs(currentScrollY - lastScrollY.current);
-      const timeElapsed = currentTime - lastTimestamp.current;
-      const scrollSpeed = timeElapsed > 0 ? scrollDistance / timeElapsed : 0;
 
       // Update last scroll position and timestamp for next calculation
-      lastScrollY.current = currentScrollY;
-      lastTimestamp.current = currentTime;
+      gsap.delayedCall(0.025, () => (lastScrollY.current = currentScrollY));
 
       const isVisible =
         currentScrollY + window.innerHeight >= triggerRef.current.offsetTop &&
@@ -46,21 +41,23 @@ const useScrollTrigger = (
 
       if (tween.current) tween.current.kill();
 
+      const ease =
+        scrollDistance > window.innerHeight / 3
+          ? 'none'
+          : `back.out(${easeOvershoot || 4})`;
+      const duration =
+        scrollDistance > window.innerHeight / 3 ? 0 : durationValue || 2.5;
+
+      if (easeOvershoot === 6) console.log({ ease, duration });
+
       tween.current = gsap.to(progressValue, {
         current: progress,
         onUpdate: () => {
-          // if (easeOvershoot === 4)
-          //   console.log(
-          //     `Speed: ${scrollSpeed}, ${easeOvershoot}, ${
-          //       (easeOvershoot || 0) / Math.max(1, scrollSpeed * 15)
-          //     }`
-          //   );
-          onProgress?.(progressValue.current, scrollSpeed);
+          // if (easeOvershoot === 6) console.log(` ${easeOvershoot}, ${ease}`);
+          onProgress?.(progressValue.current);
         },
-        duration: scrollSpeed > 1.5 ? 0.3 : duration || 2.5,
-        ease: easeOvershoot
-          ? `back.out(${easeOvershoot / Math.max(1, scrollSpeed * 15)})`
-          : 'back.out(4)',
+        duration,
+        ease,
       });
     };
 
@@ -73,7 +70,7 @@ const useScrollTrigger = (
       window.removeEventListener('scroll', calculateProgress);
       window.removeEventListener('orientationchange', calculateProgress);
     };
-  }, [onProgress, triggerRef, easeOvershoot]);
+  }, [onProgress, triggerRef, easeOvershoot, durationValue]);
 
   return isVisible;
 };
