@@ -78,7 +78,7 @@ const Tools: FC<Props> = () => {
   const isVisible = useScrollTrigger(
     containerRef,
     onScrollTriggerProgress,
-    width < SM_BREAKPOINT ? 'back.out(32)' : 'back.out(10)'
+    width < SM_BREAKPOINT ? 20 : 10
   );
 
   return (
