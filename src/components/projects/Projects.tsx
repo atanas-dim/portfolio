@@ -177,7 +177,7 @@ const Project: FC<ProjectDef> = ({
     containerRef,
     onScrollTriggerProgress,
     // Using width from useViewportSize because it doesn't triggers server side errors from window undefined
-    width < SM_BREAKPOINT ? 6 : 4,
+    width < SM_BREAKPOINT ? 6 : 2,
     width < SM_BREAKPOINT ? 2.6 : 1.2
   );
 
